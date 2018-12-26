@@ -1,0 +1,9 @@
+{
+  "name": "TimeKeeper",
+  "version": "1.0.0",
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^4.0.0",
+    "typescript": "^3.2.2"
+  }
+}
