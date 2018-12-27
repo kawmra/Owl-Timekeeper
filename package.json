@@ -1,5 +1,5 @@
 {
-  "name": "TimeKeeper",
+  "name": "owl-timekeeper",
   "version": "1.0.0",
   "license": "MIT",
   "dependencies": {
