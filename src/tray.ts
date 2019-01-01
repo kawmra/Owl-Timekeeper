@@ -10,15 +10,9 @@ export function createTray() {
         return
     }
     const icon = nativeImage.createFromPath(path.join(__dirname, "../res/starTemplate.png"))
-    const _tray = new Tray(icon)
-    _tray.setToolTip('This is my application.')
-    const menu = createMenu([
-        { name: 'item1' },
-        { name: 'item2' },
-        { name: 'item3' },
-    ])
-    _tray.setContextMenu(menu)
-    tray = _tray
+    tray = new Tray(icon)
+    tray.setToolTip('This is my application.')
+    updateMenu()
 }
 
 function mapToMenuItem(task: Task): Electron.MenuItemConstructorOptions {

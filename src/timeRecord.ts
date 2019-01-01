@@ -5,7 +5,7 @@ export interface TimeRecord {
 }
 
 export interface TimeRecordRepository {
-    addTimeRecord(timeRecord: TimeRecord): Promise<any>
+    addTimeRecord(timeRecord: TimeRecord): Promise<void>
     selectAll(): Promise<TimeRecord[]>
 }
 
@@ -13,7 +13,7 @@ export class InMemoryTimeRecordRepository implements TimeRecordRepository {
 
     private timeRecords: TimeRecord[] = []
 
-    addTimeRecord(timeRecord: TimeRecord): Promise<any> {
+    addTimeRecord(timeRecord: TimeRecord): Promise<void> {
         this.timeRecords.push(timeRecord)
         console.log(`Saved time record: ${JSON.stringify(timeRecord)}`)
         return Promise.resolve()
