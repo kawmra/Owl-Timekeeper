@@ -1,7 +1,7 @@
 import React = require('react');
-import { Task } from '../../task';
+import { Task, ERROR_TASK_ALREADY_EXISTS } from '../../task';
 import { TaskItem } from './Task';
-import { useCases, tray } from '../remote';
+import { useCases, tray, dialog } from '../remote';
 
 interface Props { }
 
@@ -33,8 +33,17 @@ export class Tasks extends React.Component<Props, State> {
   handleAddTask(element: HTMLElement) {
     this.setState({ tempTaskName: '' })
     useCases.createTask(this.state.tempTaskName)
-    tray.updateMenu()
-    this.refreshTasks()
+      .then(() => {
+        tray.updateMenu()
+        this.refreshTasks()
+      })
+      .catch((err: any) => {
+        if (err === ERROR_TASK_ALREADY_EXISTS) {
+          dialog.showMessageBox({ message: `The task '${this.state.tempTaskName}' aready exists.` })
+        } else {
+          dialog.showMessageBox({ message: `Failed to add a task because: ${err}` })
+        }
+      })
   }
 
   render() {

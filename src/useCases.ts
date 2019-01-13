@@ -1,23 +1,27 @@
-import { Task, InMemoryTaskRepository, ActiveTask, InMemoryActiveTaskRepository } from "./task";
-import { InMemoryTimeRecordRepository, TimeRecord } from "./timeRecord";
+import { Task, ActiveTask, DbTaskRepository, DbActiveTaskRepository } from "./task";
+import { TimeRecord, DbTimeRecordRepository } from "./timeRecord";
+import { currentDay } from "./day";
 
-const taskRepository = new InMemoryTaskRepository()
-const activeTaskRepository = new InMemoryActiveTaskRepository()
-const timeRecordRepository = new InMemoryTimeRecordRepository()
+const taskRepository = new DbTaskRepository()
+const activeTaskRepository = new DbActiveTaskRepository()
+const timeRecordRepository = new DbTimeRecordRepository()
 
 export async function createTask(name: string): Promise<Task> {
     const task = { name }
-    taskRepository.add(task)
-    return Promise.resolve(task)
+    await taskRepository.add(task)
+    return task
 }
 
 export async function deleteTask(task: Task): Promise<void> {
-    taskRepository.remove(task)
-    return Promise.resolve()
+    await taskRepository.remove(task)
 }
 
 export async function getTasks(): Promise<Task[]> {
     return taskRepository.selectAll()
+}
+
+export async function existsTask(taskName: string): Promise<boolean> {
+    return taskRepository.exists(taskName)
 }
 
 export async function setActiveTask(task: Task): Promise<ActiveTask> {
@@ -25,7 +29,12 @@ export async function setActiveTask(task: Task): Promise<ActiveTask> {
 }
 
 export async function getActiveTask(): Promise<ActiveTask | null> {
-    return activeTaskRepository.getActiveTask()
+    const activeTask = await activeTaskRepository.getActiveTask()
+    if (activeTask != null && await existsTask(activeTask.task.name)) {
+        return activeTask
+    }
+    // return null if task of activeTask didn't exist
+    return null
 }
 
 export async function clearActiveTask(): Promise<void> {
@@ -34,10 +43,10 @@ export async function clearActiveTask(): Promise<void> {
 
 export async function addTimeRecord(task: Task, startTime: number, endTime: number): Promise<TimeRecord> {
     const timeRecord = { taskName: task.name, startTime, endTime }
-    timeRecordRepository.addTimeRecord(timeRecord)
-    return Promise.resolve(timeRecord)
+    await timeRecordRepository.addTimeRecord(timeRecord)
+    return timeRecord
 }
 
 export async function getTimeRecords(): Promise<TimeRecord[]> {
-    return timeRecordRepository.selectAll()
+    return timeRecordRepository.select(currentDay())
 }

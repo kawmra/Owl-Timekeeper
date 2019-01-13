@@ -1,3 +1,8 @@
+import { Day, dayToMillis } from "./day";
+import Nedb = require("nedb");
+import { app } from "electron";
+import * as path from "path"
+
 export interface TimeRecord {
     taskName: string
     startTime: number
@@ -6,21 +11,45 @@ export interface TimeRecord {
 
 export interface TimeRecordRepository {
     addTimeRecord(timeRecord: TimeRecord): Promise<void>
+    select(day: Day): Promise<TimeRecord[]>
     selectAll(): Promise<TimeRecord[]>
 }
 
-export class InMemoryTimeRecordRepository implements TimeRecordRepository {
+export class DbTimeRecordRepository implements TimeRecordRepository {
 
-    private timeRecords: TimeRecord[] = []
+    private db = new Nedb({
+        filename: path.join(app.getPath('userData'), 'timeRecords.db'),
+        autoload: true
+    })
 
     addTimeRecord(timeRecord: TimeRecord): Promise<void> {
-        this.timeRecords.push(timeRecord)
-        console.log(`Saved time record: ${JSON.stringify(timeRecord)}`)
+        this.db.insert(timeRecord)
         return Promise.resolve()
     }
 
+    select(day: Day): Promise<TimeRecord[]> {
+        return new Promise((resolve, reject) => {
+            const dayStart = dayToMillis(day)
+            const dayEnd = dayStart + 86400000 // 24 hours later
+            this.db.find({ $and: [{ startTime: { $gte: dayStart } }, { startTime: { $lt: dayEnd } }] }).exec((err, docs: TimeRecord[]) => {
+                if (err) {
+                    reject(err)
+                    return
+                }
+                resolve(docs)
+            })
+        })
+    }
+
     selectAll(): Promise<TimeRecord[]> {
-        console.log(`All time records: ${JSON.stringify(this.timeRecords)}`)
-        return Promise.resolve(this.timeRecords)
+        return new Promise((resolve, reject) => {
+            this.db.find({}).exec((err, docs: TimeRecord[]) => {
+                if (err) {
+                    reject(err)
+                    return
+                }
+                resolve(docs)
+            })
+        })
     }
 }

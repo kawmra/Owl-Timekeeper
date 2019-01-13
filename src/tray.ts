@@ -1,7 +1,8 @@
-import { Tray, nativeImage, Menu, MenuItem } from "electron"
+import { Tray, nativeImage, Menu, dialog } from "electron"
 import * as path from "path"
 import { Task } from "./task"
 import { setActiveTask, getActiveTask, addTimeRecord, clearActiveTask, getTimeRecords, getTasks } from "./useCases";
+import { TimeRecord } from "./timeRecord";
 
 let tray: Tray = null
 
@@ -19,7 +20,6 @@ function mapToMenuItem(task: Task): Electron.MenuItemConstructorOptions {
     return {
         label: task.name,
         type: 'radio',
-        checked: false,
     }
 }
 
@@ -39,17 +39,21 @@ async function switchTask(task: Task | null) {
     }
 }
 
-export function createMenu(tasks: Array<Task>): Menu {
-    let template: Electron.MenuItemConstructorOptions[] = tasks.map((task) => {
+export function createMenu(tasks: Array<Task>, activeTaskName: String = undefined): Menu {
+    var foundActiveTask = false
+    let template: Electron.MenuItemConstructorOptions[] = tasks.map(task => {
+        const checked = activeTaskName !== undefined && task.name === activeTaskName
+        if (checked) foundActiveTask = true
         return {
             ...mapToMenuItem(task),
+            checked,
             click: () => switchTask(task)
         }
     })
     template = template.concat([
-        { label: 'none', type: 'radio', checked: true, click: () => switchTask(null) },
+        { label: 'none', type: 'radio', checked: !foundActiveTask, click: () => switchTask(null) },
         { type: 'separator' },
-        { label: 'Show records', click: () => { getTimeRecords().then(records => console.log(records)) } },
+        { label: 'Show records', click: () => { getTimeRecords().then(records => showTimeRecords(records)) } },
         { type: 'separator' },
         { label: 'Quit', role: 'quit' }
     ])
@@ -60,7 +64,30 @@ export function updateMenu() {
     if (tray == null) {
         return
     }
-    getTasks().then(tasks => {
-        tray.setContextMenu(createMenu(tasks))
+    async function temp() {
+        const tasks = await getTasks()
+        const activeTask = await getActiveTask()
+        return { tasks, activeTask }
+    }
+    temp().then(temp => {
+        const activeTaskName = temp.activeTask && temp.activeTask.task.name
+        console.log(`activeTaskName: ${activeTaskName}`)
+        tray.setContextMenu(createMenu(temp.tasks, activeTaskName))
     })
+}
+
+function showTimeRecords(records: TimeRecord[]) {
+    dialog.showMessageBox({ message: records.map(r => `${r.taskName}\t${stringify(r)}`).join('\n') })
+}
+
+function stringify(record: TimeRecord): string {
+    const seconds = (record.endTime - record.startTime) / 1000
+    const h = Math.floor(seconds / 3600)
+    const m = Math.floor(seconds % 3600 / 60)
+    const s = Math.floor(seconds % 60)
+    var str = ""
+    if (h !== 0) str += `${h}h `
+    if (m !== 0) str += `${m}m `
+    if (s !== 0) str += `${s}s`
+    return str
 }
