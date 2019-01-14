@@ -1,8 +1,9 @@
 import { Tray, nativeImage, Menu, dialog } from "electron"
 import * as path from "path"
 import { Task } from "./task"
-import { setActiveTask, getActiveTask, addTimeRecord, clearActiveTask, getTimeRecords, getTasks } from "./useCases";
+import { setActiveTask, getActiveTask, addTimeRecord, clearActiveTask, getTasks, getTimeRecords } from "./useCases";
 import { TimeRecord } from "./timeRecord";
+import { currentDay } from "./day";
 
 let tray: Tray = null
 
@@ -53,7 +54,7 @@ export function createMenu(tasks: Array<Task>, activeTaskName: String = undefine
     template = template.concat([
         { label: 'none', type: 'radio', checked: !foundActiveTask, click: () => switchTask(null) },
         { type: 'separator' },
-        { label: 'Show records', click: () => { getTimeRecords().then(records => showTimeRecords(records)) } },
+        { label: 'Show records', click: () => { getTimeRecords(currentDay()).then(records => showTimeRecords(records)) } },
         { type: 'separator' },
         { label: 'Quit', role: 'quit' }
     ])

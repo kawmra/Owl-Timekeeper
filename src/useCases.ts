@@ -1,6 +1,6 @@
 import { Task, ActiveTask, DbTaskRepository, DbActiveTaskRepository } from "./task";
 import { TimeRecord, DbTimeRecordRepository } from "./timeRecord";
-import { currentDay } from "./day";
+import { Day } from "./day";
 
 const taskRepository = new DbTaskRepository()
 const activeTaskRepository = new DbActiveTaskRepository()
@@ -47,6 +47,6 @@ export async function addTimeRecord(task: Task, startTime: number, endTime: numb
     return timeRecord
 }
 
-export async function getTimeRecords(): Promise<TimeRecord[]> {
-    return timeRecordRepository.select(currentDay())
+export async function getTimeRecords(day: Day): Promise<TimeRecord[]> {
+    return timeRecordRepository.select(day)
 }
