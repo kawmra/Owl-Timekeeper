@@ -1,7 +1,7 @@
 import React = require("react");
-import { Tasks } from "./component/Task";
-import { TimeRecords } from "./component/TimeRecord";
-import { currentDay } from "../../domain/day";
+import { Tasks } from "./Task";
+import { TimeRecords } from "./TimeRecord";
+import { currentDay } from "../../../domain/day";
 
 interface Props { }
 interface State { }
