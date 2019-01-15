@@ -20,24 +20,25 @@ export function createTray() {
 function mapToMenuItem(task: Task): Electron.MenuItemConstructorOptions {
     return {
         label: task.name,
-        type: 'radio',
+        type: 'checkbox',
     }
 }
 
-async function switchTask(task: Task | null) {
+async function switchTask(task: Task) {
     const now = new Date().getTime()
     const oldActiveTask = await getActiveTask()
-    if (oldActiveTask != null) {
+    if (oldActiveTask !== null) {
         await addTimeRecord(oldActiveTask.task, oldActiveTask.startTime, now)
         console.log(`Saved TimeRecord of ${oldActiveTask.task.name}`)
     }
-    if (task == null) {
+    if (oldActiveTask !== null && oldActiveTask.task.name === task.name) {
         await clearActiveTask()
         console.log('Cleared activeTask')
     } else {
         await setActiveTask(task)
         console.log(`Switch task to ${task ? task.name : 'none'}!`)
     }
+    updateMenu()
 }
 
 export function createMenu(tasks: Array<Task>, activeTaskName: String = undefined): Menu {
@@ -52,7 +53,6 @@ export function createMenu(tasks: Array<Task>, activeTaskName: String = undefine
         }
     })
     template = template.concat([
-        { label: 'none', type: 'radio', checked: !foundActiveTask, click: () => switchTask(null) },
         { type: 'separator' },
         { label: 'Show records', click: () => { getTimeRecords(currentDay()).then(records => showTimeRecords(records)) } },
         { type: 'separator' },
