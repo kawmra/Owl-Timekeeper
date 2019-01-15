@@ -78,7 +78,7 @@ export function updateMenu() {
 }
 
 function showTimeRecords(records: TimeRecord[]) {
-    dialog.showMessageBox({ message: records.map(r => `${r.taskName}\t${stringify(r)}`).join('\n') })
+    dialog.showMessageBox({ message: records.map(r => `${r.task.name}\t${stringify(r)}`).join('\n') })
 }
 
 function stringify(record: TimeRecord): string {

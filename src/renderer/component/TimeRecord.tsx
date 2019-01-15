@@ -2,6 +2,7 @@ import React = require("react");
 import { TimeRecord } from "../../timeRecord";
 import { useCases } from "../remote";
 import { Day, dayToString, dayToMillis, millisToDay } from "../../day";
+import { Task } from "../../task";
 
 interface Props {
     day: Day
@@ -15,7 +16,7 @@ interface State {
 const TimeRecordElement = (props: { reducedTimeRecord: ReducedTimeRecord }) => {
     return (
         <dl>
-            <dt>{props.reducedTimeRecord.taskName}</dt>
+            <dt>{props.reducedTimeRecord.task.name}</dt>
             <dd>{toTimeString(props.reducedTimeRecord.totalTimeMillis)}</dd>
         </dl>
     )
@@ -91,7 +92,7 @@ function toTimeString(millis: number): string {
 }
 
 interface ReducedTimeRecord {
-    taskName: string
+    task: Task
     totalTimeMillis: number
     timeRecords: TimeRecord[]
 }
@@ -99,17 +100,17 @@ interface ReducedTimeRecord {
 function distinctReduce(records: TimeRecord[]): ReducedTimeRecord[] {
     const temp: Map<string, ReducedTimeRecord> = new Map()
     records.forEach(record => {
-        if (!temp.has(record.taskName)) {
+        if (!temp.has(record.task.id)) {
             temp.set(
-                record.taskName,
+                record.task.id,
                 {
-                    taskName: record.taskName,
+                    task: record.task,
                     totalTimeMillis: (record.endTime - record.startTime),
                     timeRecords: [record]
                 }
             )
         } else {
-            const r = temp.get(record.taskName)
+            const r = temp.get(record.task.id)
             r.totalTimeMillis += (record.endTime - record.startTime)
             r.timeRecords.push(record)
         }

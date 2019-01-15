@@ -1,13 +1,14 @@
 import { Task, ActiveTask, DbTaskRepository, DbActiveTaskRepository } from "./task";
 import { TimeRecord, DbTimeRecordRepository } from "./timeRecord";
 import { Day } from "./day";
+import { v4 } from "uuid";
 
 const taskRepository = new DbTaskRepository()
 const activeTaskRepository = new DbActiveTaskRepository()
 const timeRecordRepository = new DbTimeRecordRepository()
 
 export async function createTask(name: string): Promise<Task> {
-    const task = { name }
+    const task = { id: v4(), name }
     await taskRepository.add(task)
     return task
 }
@@ -42,7 +43,7 @@ export async function clearActiveTask(): Promise<void> {
 }
 
 export async function addTimeRecord(task: Task, startTime: number, endTime: number): Promise<TimeRecord> {
-    const timeRecord = { taskName: task.name, startTime, endTime }
+    const timeRecord = { task, startTime, endTime }
     await timeRecordRepository.addTimeRecord(timeRecord)
     return timeRecord
 }

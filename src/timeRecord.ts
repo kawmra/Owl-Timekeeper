@@ -2,9 +2,10 @@ import { Day, dayToMillis } from "./day";
 import Nedb = require("nedb");
 import { app } from "electron";
 import * as path from "path"
+import { Task } from "./task";
 
 export interface TimeRecord {
-    taskName: string
+    task: Task
     startTime: number
     endTime: number
 }

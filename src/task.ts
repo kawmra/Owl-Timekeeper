@@ -3,6 +3,7 @@ import Nedb = require("nedb");
 import * as path from "path"
 
 export interface Task {
+    id: string
     name: string
 }
 
