@@ -1,20 +1,8 @@
-import { Day, dayToMillis } from "./day";
+import { TimeRecordRepository, TimeRecord } from "../../domain/timeRecord";
+import { Day, dayToMillis } from "../../domain/day";
 import Nedb = require("nedb");
-import { app } from "electron";
 import * as path from "path"
-import { Task } from "./task";
-
-export interface TimeRecord {
-    task: Task
-    startTime: number
-    endTime: number
-}
-
-export interface TimeRecordRepository {
-    addTimeRecord(timeRecord: TimeRecord): Promise<void>
-    select(day: Day): Promise<TimeRecord[]>
-    selectAll(): Promise<TimeRecord[]>
-}
+import { app } from "electron";
 
 export class DbTimeRecordRepository implements TimeRecordRepository {
 

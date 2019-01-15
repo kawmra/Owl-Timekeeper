@@ -1,6 +1,7 @@
 import React = require('react');
-import { Task, ERROR_TASK_ALREADY_EXISTS } from '../../task';
+import { Task } from '../../../domain/task';
 import { useCases, tray, dialog } from '../remote';
+import { ERROR_TASK_ALREADY_EXISTS } from '../../../data/task/DbTaskRepository';
 
 interface Props { }
 

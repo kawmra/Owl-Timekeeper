@@ -1,9 +1,9 @@
 import { Tray, nativeImage, Menu, dialog } from "electron"
 import * as path from "path"
-import { Task } from "./task"
-import { setActiveTask, getActiveTask, addTimeRecord, clearActiveTask, getTasks, getTimeRecords } from "./useCases";
-import { TimeRecord } from "./timeRecord";
-import { currentDay } from "./day";
+import { Task } from "../../domain/task"
+import { setActiveTask, getActiveTask, addTimeRecord, clearActiveTask, getTasks, getTimeRecords } from "../../domain/useCases";
+import { TimeRecord } from "../../domain/timeRecord";
+import { currentDay } from "../../domain/day";
 
 let tray: Tray = null
 
@@ -11,7 +11,7 @@ export function createTray() {
     if (tray != null) {
         return
     }
-    const icon = nativeImage.createFromPath(path.join(__dirname, "../res/starTemplate.png"))
+    const icon = nativeImage.createFromPath(path.join(__dirname, "../../../res/starTemplate.png"))
     tray = new Tray(icon)
     tray.setToolTip('This is my application.')
     updateMenu()
@@ -89,6 +89,6 @@ function stringify(record: TimeRecord): string {
     var str = ""
     if (h !== 0) str += `${h}h `
     if (m !== 0) str += `${m}m `
-    if (s !== 0) str += `${s}s`
+    if (s !== 0) str += `${s}s `
     return str
 }

@@ -1,8 +1,8 @@
 import React = require("react");
-import { TimeRecord } from "../../timeRecord";
+import { TimeRecord } from "../../../domain/timeRecord";
 import { useCases } from "../remote";
-import { Day, dayToString, dayToMillis, millisToDay } from "../../day";
-import { Task } from "../../task";
+import { Day, dayToString, dayToMillis, millisToDay } from "../../../domain/day";
+import { Task } from "../../../domain/task";
 
 interface Props {
     day: Day

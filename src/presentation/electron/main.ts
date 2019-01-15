@@ -1,4 +1,4 @@
-import { app, Menu, Tray, nativeImage, BrowserWindow } from "electron"
+import { app, BrowserWindow } from "electron"
 import * as path from "path"
 import { createTray } from "./tray"
 
@@ -12,7 +12,7 @@ function createWindow() {
     })
 
     // and load the index.html of the app.
-    mainWindow.loadFile(path.join(__dirname, "../index.html"))
+    mainWindow.loadFile(path.join(__dirname, "../../../index.html"))
 
     // Open the DevTools.
     mainWindow.webContents.openDevTools()

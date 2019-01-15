@@ -1,7 +1,10 @@
-import { Task, ActiveTask, DbTaskRepository, DbActiveTaskRepository } from "./task";
-import { TimeRecord, DbTimeRecordRepository } from "./timeRecord";
+import { Task, ActiveTask } from "./task";
+import { TimeRecord } from "./timeRecord";
 import { Day } from "./day";
 import { v4 } from "uuid";
+import { DbTaskRepository } from "../data/task/DbTaskRepository";
+import { DbActiveTaskRepository } from "../data/task/DbActiveTaskRepository";
+import { DbTimeRecordRepository } from "../data/timeRecord/DbTimeRecordRepository";
 
 const taskRepository = new DbTaskRepository()
 const activeTaskRepository = new DbActiveTaskRepository()
