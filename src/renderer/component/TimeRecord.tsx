@@ -12,11 +12,11 @@ interface State {
     targetDay: Day
 }
 
-const TimeRecordElement = (props: { timeRecord: TimeRecord }) => {
+const TimeRecordElement = (props: { reducedTimeRecord: ReducedTimeRecord }) => {
     return (
         <dl>
-            <dt>{props.timeRecord.taskName}</dt>
-            <dd>{toTimeString(props.timeRecord)}</dd>
+            <dt>{props.reducedTimeRecord.taskName}</dt>
+            <dd>{toTimeString(props.reducedTimeRecord.totalTimeMillis)}</dd>
         </dl>
     )
 }
@@ -57,9 +57,9 @@ export class TimeRecords extends React.Component<Props, State> {
                 <p>No records found of this day.</p>
             )
         }
-        return this.state.timeRecords.map((timeRecord, i) => {
+        return distinctReduce(this.state.timeRecords).map((reducedTimeRecord, i) => {
             return (
-                <TimeRecordElement key={i} timeRecord={timeRecord} />
+                <TimeRecordElement key={i} reducedTimeRecord={reducedTimeRecord} />
             )
         })
     }
@@ -78,8 +78,8 @@ export class TimeRecords extends React.Component<Props, State> {
     }
 }
 
-function toTimeString(record: TimeRecord): string {
-    const seconds = (record.endTime - record.startTime) / 1000
+function toTimeString(millis: number): string {
+    const seconds = millis / 1000
     const h = Math.floor(seconds / 3600)
     const m = Math.floor(seconds % 3600 / 60)
     const s = Math.floor(seconds % 60)
@@ -88,4 +88,31 @@ function toTimeString(record: TimeRecord): string {
     if (m !== 0) str += `${m}m `
     if (s !== 0) str += `${s}s`
     return str
+}
+
+interface ReducedTimeRecord {
+    taskName: string
+    totalTimeMillis: number
+    timeRecords: TimeRecord[]
+}
+
+function distinctReduce(records: TimeRecord[]): ReducedTimeRecord[] {
+    const temp: Map<string, ReducedTimeRecord> = new Map()
+    records.forEach(record => {
+        if (!temp.has(record.taskName)) {
+            temp.set(
+                record.taskName,
+                {
+                    taskName: record.taskName,
+                    totalTimeMillis: (record.endTime - record.startTime),
+                    timeRecords: [record]
+                }
+            )
+        } else {
+            const r = temp.get(record.taskName)
+            r.totalTimeMillis += (record.endTime - record.startTime)
+            r.timeRecords.push(record)
+        }
+    })
+    return Array.from(temp.values())
 }
