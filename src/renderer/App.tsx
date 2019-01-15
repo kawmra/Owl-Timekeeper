@@ -1,5 +1,5 @@
 import React = require("react");
-import { Tasks } from "./component/Tasks";
+import { Tasks } from "./component/Task";
 import { TimeRecords } from "./component/TimeRecord";
 import { currentDay } from "../day";
 
