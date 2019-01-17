@@ -1,6 +1,6 @@
-import { Tray, nativeImage, Menu, dialog } from "electron"
+import { Tray, nativeImage, Menu, dialog, MenuItem } from "electron"
 import * as path from "path"
-import { Task } from "../../domain/task"
+import { Task, ActiveTask } from "../../domain/task"
 import { setActiveTask, getActiveTask, addTimeRecord, clearActiveTask, getTasks, getTimeRecords } from "../../domain/useCases";
 import { TimeRecord } from "../../domain/timeRecord";
 import { currentDay } from "../../domain/day";
@@ -14,7 +14,7 @@ export function createTray() {
     const icon = nativeImage.createFromPath(path.join(__dirname, "../../../res/starTemplate.png"))
     tray = new Tray(icon)
     tray.setToolTip('This is my application.')
-    updateMenu()
+    update()
 }
 
 function mapToMenuItem(task: Task): Electron.MenuItemConstructorOptions {
@@ -38,13 +38,13 @@ async function switchTask(task: Task) {
         await setActiveTask(task)
         console.log(`Switch task to ${task ? task.name : 'none'}!`)
     }
-    updateMenu()
+    update()
 }
 
-export function createMenu(tasks: Array<Task>, activeTaskName: String = undefined): Menu {
+export function createMenu(tasks: Array<Task>, activeTask: ActiveTask = null): Menu {
     var foundActiveTask = false
-    let template: Electron.MenuItemConstructorOptions[] = tasks.map(task => {
-        const checked = activeTaskName !== undefined && task.name === activeTaskName
+    const taskItems: Electron.MenuItemConstructorOptions[] = tasks.map(task => {
+        const checked = activeTask !== null && task.name === activeTask.task.name
         if (checked) foundActiveTask = true
         return {
             ...mapToMenuItem(task),
@@ -52,29 +52,42 @@ export function createMenu(tasks: Array<Task>, activeTaskName: String = undefine
             click: () => switchTask(task)
         }
     })
+    let template: Electron.MenuItemConstructorOptions[] = []
+    if (foundActiveTask) {
+        template.push({
+            type: 'normal',
+            label: millisToString(new Date().getTime() - activeTask.startTime),
+            enabled: false
+        })
+        template.push({
+            type: 'separator'
+        })
+    }
+    template.push({
+        type: 'normal',
+        label: 'Tasks',
+        enabled: false
+    })
+    template.push(...taskItems)
     template = template.concat([
         { type: 'separator' },
-        { label: 'Show records', click: () => { getTimeRecords(currentDay()).then(records => showTimeRecords(records)) } },
+        { label: 'Show Records', click: () => { getTimeRecords(currentDay()).then(records => showTimeRecords(records)) } },
         { type: 'separator' },
         { label: 'Quit', role: 'quit' }
     ])
     return Menu.buildFromTemplate(template)
 }
 
-export function updateMenu() {
+export async function update() {
     if (tray == null) {
         return
     }
-    async function temp() {
-        const tasks = await getTasks()
-        const activeTask = await getActiveTask()
-        return { tasks, activeTask }
-    }
-    temp().then(temp => {
-        const activeTaskName = temp.activeTask && temp.activeTask.task.name
-        console.log(`activeTaskName: ${activeTaskName}`)
-        tray.setContextMenu(createMenu(temp.tasks, activeTaskName))
-    })
+    console.log('update!')
+    const tasks = await getTasks()
+    const activeTask = await getActiveTask()
+    const menu = createMenu(tasks, activeTask)
+    tray.setTitle(activeTask ? activeTask.task.name : '')
+    tray.setContextMenu(menu)
 }
 
 function showTimeRecords(records: TimeRecord[]) {
@@ -82,7 +95,11 @@ function showTimeRecords(records: TimeRecord[]) {
 }
 
 function stringify(record: TimeRecord): string {
-    const seconds = (record.endTime - record.startTime) / 1000
+    return millisToString(record.endTime - record.startTime)
+}
+
+function millisToString(millis: number): string {
+    const seconds = millis / 1000
     const h = Math.floor(seconds / 3600)
     const m = Math.floor(seconds % 3600 / 60)
     const s = Math.floor(seconds % 60)

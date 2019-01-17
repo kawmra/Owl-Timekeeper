@@ -40,7 +40,7 @@ export class Tasks extends React.Component<Props, State> {
     this.setState({ tempTaskName: '' })
     useCases.createTask(this.state.tempTaskName)
       .then(() => {
-        tray.updateMenu()
+        tray.update()
         this.refreshTasks()
       })
       .catch((err: any) => {
