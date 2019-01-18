@@ -42,10 +42,8 @@ async function switchTask(task: Task) {
 }
 
 export function createMenu(tasks: Array<Task>, activeTask: ActiveTask = null): Menu {
-    var foundActiveTask = false
     const taskItems: Electron.MenuItemConstructorOptions[] = tasks.map(task => {
         const checked = activeTask !== null && task.name === activeTask.task.name
-        if (checked) foundActiveTask = true
         return {
             ...mapToMenuItem(task),
             checked,
@@ -53,16 +51,6 @@ export function createMenu(tasks: Array<Task>, activeTask: ActiveTask = null): M
         }
     })
     let template: Electron.MenuItemConstructorOptions[] = []
-    if (foundActiveTask) {
-        template.push({
-            type: 'normal',
-            label: millisToString(new Date().getTime() - activeTask.startTime),
-            enabled: false
-        })
-        template.push({
-            type: 'separator'
-        })
-    }
     template.push({
         type: 'normal',
         label: 'Tasks',
