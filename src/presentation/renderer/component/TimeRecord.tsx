@@ -38,7 +38,7 @@ export class TimeRecords extends React.Component<Props, State> {
 
     refreshTimeRecords(day: Day) {
         // We have to create *remote* Day instance.
-        // Because here is renderer process, but `getTimeRecords()` will be excecuted on main process.
+        // Because here is renderer process, but `getTimeRecords()` will be executed on main process.
         // If we don't do so, states of the day instance will be broken (maybe all instance fields become undefined).
         const obj = day.toObject()
         const rd = new remoteDay.Day(obj.year, obj.month, obj.day, obj.utcOffset)
