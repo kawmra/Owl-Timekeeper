@@ -3,7 +3,7 @@ import * as path from "path"
 import { Task, ActiveTask } from "../../domain/task"
 import { setActiveTask, getActiveTask, addTimeRecord, clearActiveTask, getTasks, getTimeRecords } from "../../domain/useCases";
 import { TimeRecord } from "../../domain/timeRecord";
-import { currentDay } from "../../domain/day";
+import { Day } from "../../domain/day";
 
 let tray: Tray = null
 
@@ -59,7 +59,7 @@ export function createMenu(tasks: Array<Task>, activeTask: ActiveTask = null): M
     template.push(...taskItems)
     template = template.concat([
         { type: 'separator' },
-        { label: 'Show Records', click: () => { getTimeRecords(currentDay()).then(records => showTimeRecords(records)) } },
+        { label: 'Show Records', click: () => { getTimeRecords(Day.today()).then(records => showTimeRecords(records)) } },
         { type: 'separator' },
         { label: 'Quit', role: 'quit' }
     ])

@@ -1,7 +1,7 @@
 import React = require("react");
 import { TimeRecord } from "../../../domain/timeRecord";
-import { useCases } from "../remote";
-import { Day, dayToString, dayToMillis, millisToDay } from "../../../domain/day";
+import { useCases, remoteDay } from "../remote";
+import { Day } from "../../../domain/day";
 import { Task } from "../../../domain/task";
 
 interface Props {
@@ -37,18 +37,23 @@ export class TimeRecords extends React.Component<Props, State> {
     }
 
     refreshTimeRecords(day: Day) {
-        useCases.getTimeRecords(day).then((timeRecords: TimeRecord[]) => {
+        // We have to create *remote* Day instance.
+        // Because here is renderer process, but `getTimeRecords()` will be excecuted on main process.
+        // If we don't do so, states of the day instance will be broken (maybe all instance fields become undefined).
+        const obj = day.toObject()
+        const rd = new remoteDay.Day(obj.year, obj.month, obj.day, obj.utcOffset)
+        useCases.getTimeRecords(rd).then((timeRecords: TimeRecord[]) => {
             this.setState({ targetDay: day, timeRecords })
         })
     }
 
     handlePrevClick() {
-        const prevDay = millisToDay(dayToMillis(this.state.targetDay) - 86400000)
+        const prevDay = this.state.targetDay.addDay(-1)
         this.refreshTimeRecords(prevDay)
     }
 
     handleNextClick() {
-        const nextDay = millisToDay(dayToMillis(this.state.targetDay) + 86400000)
+        const nextDay = this.state.targetDay.addDay(1)
         this.refreshTimeRecords(nextDay)
     }
 
@@ -70,7 +75,7 @@ export class TimeRecords extends React.Component<Props, State> {
             <div>
                 <p>
                     <button onClick={this.handlePrevClick.bind(this)}>&lt;</button>
-                    {dayToString(this.state.targetDay)}
+                    {this.state.targetDay.toString()}
                     <button onClick={this.handleNextClick.bind(this)}>&gt;</button>
                 </p>
                 {this.renderTimeRecordElements()}

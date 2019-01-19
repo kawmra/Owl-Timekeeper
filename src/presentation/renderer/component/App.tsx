@@ -1,7 +1,7 @@
 import React = require("react");
 import { Tasks } from "./Task";
 import { TimeRecords } from "./TimeRecord";
-import { currentDay } from "../../../domain/day";
+import { Day } from "../../../domain/day";
 
 interface Props { }
 interface State { }
@@ -17,7 +17,7 @@ export class App extends React.Component<Props, State> {
         return (
             <div>
                 <Tasks />
-                <TimeRecords day={currentDay()} />
+                <TimeRecords day={Day.today()} />
             </div>
         )
     }
