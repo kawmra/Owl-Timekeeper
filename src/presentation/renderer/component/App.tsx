@@ -36,7 +36,7 @@ export class App extends React.Component<Props, State> {
         }
         return (
             <div>
-                <div className="ui secondary pointing four item menu" style={{ paddingTop: 4 }}>
+                <div className="ui secondary pointing four item menu">
                     <a className={"item" + active.call(this, Page.TASKS)} onClick={this.switchPage.bind(this, Page.TASKS)}>
                         Tasks
                     </a>
@@ -48,7 +48,7 @@ export class App extends React.Component<Props, State> {
                         Settings
                     </a>
                 </div>
-                <div className="ui padded basic container segment" style={{ paddingRight: 16, paddingLeft: 16 }}>
+                <div className="ui padded basic container segment">
                     <div style={visibility.call(this, Page.TASKS)}>
                         <Tasks />
                     </div>
