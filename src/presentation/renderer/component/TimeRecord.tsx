@@ -73,11 +73,17 @@ export class TimeRecords extends React.Component<Props, State> {
     render() {
         return (
             <div>
-                <p>
-                    <button onClick={this.handlePrevClick.bind(this)}>&lt;</button>
-                    {this.state.targetDay.toString()}
-                    <button onClick={this.handleNextClick.bind(this)}>&gt;</button>
-                </p>
+                <div className="ui pagination menu">
+                    <a onClick={this.handlePrevClick.bind(this)} className="item">
+                        <i className="angle left icon"></i>
+                    </a>
+                    <div className="disabled item">
+                        {this.state.targetDay.toString()}
+                    </div>
+                    <a onClick={this.handleNextClick.bind(this)} className="item">
+                        <i className="angle right icon"></i>
+                    </a>
+                </div>
                 {this.renderTimeRecordElements()}
             </div>
         )

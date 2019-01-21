@@ -12,7 +12,15 @@ interface State {
 
 export const TaskItem = (props: { task: Task }) => {
   return (
-    <li>{props.task.name}</li>
+    <div className="item">
+      <div className="aligned content">
+        {props.task.name}
+        <div className="right floated item">
+          <i className="edit link icon"></i>
+          <i className="trash link icon"></i>
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -55,9 +63,15 @@ export class Tasks extends React.Component<Props, State> {
   render() {
     return (
       <div>
-        <label>Task Name: <input type="text" value={this.state.tempTaskName} onChange={(element) => { this.setState({ tempTaskName: element.target.value }) }} /></label>
-        <button onClick={this.handleAddTask.bind(this)}>Add Task</button>
-        <ul>
+        <div className="ui fluid action input">
+          <input
+            type="text"
+            value={this.state.tempTaskName}
+            placeholder="Task Name"
+            onChange={(element) => { this.setState({ tempTaskName: element.target.value }) }} />
+          <button onClick={this.handleAddTask.bind(this)} className="ui button">Add Task</button>
+        </div>
+        <div className="ui divided items">
           {
             this.state.tasks.map((task: Task) => {
               return (
@@ -65,7 +79,7 @@ export class Tasks extends React.Component<Props, State> {
               )
             })
           }
-        </ul>
+        </div>
       </div>
     );
   }
