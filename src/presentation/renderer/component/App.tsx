@@ -36,11 +36,13 @@ export class App extends React.Component<Props, State> {
         }
         return (
             <div>
-                <div className="ui secondary pointing four item menu">
+                <div className="ui borderless pointing labeled icon three item menu">
                     <a className={"item" + active.call(this, Page.TASKS)} onClick={this.switchPage.bind(this, Page.TASKS)}>
+                        <i className="tasks icon"></i>
                         Tasks
                     </a>
                     <a className={"item" + active.call(this, Page.TIME_RECORDS)} onClick={this.switchPage.bind(this, Page.TIME_RECORDS)}>
+                        <i className="clock outline icon"></i>
                         Time Records
                     </a>
                     <a className={"right item" + active.call(this, Page.SETTINGS)} onClick={this.switchPage.bind(this, Page.SETTINGS)}>
