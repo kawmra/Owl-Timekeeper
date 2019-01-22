@@ -15,10 +15,10 @@ interface State {
 
 const TimeRecordElement = (props: { reducedTimeRecord: ReducedTimeRecord }) => {
     return (
-        <dl>
-            <dt>{props.reducedTimeRecord.task.name}</dt>
-            <dd>{toTimeString(props.reducedTimeRecord.totalTimeMillis)}</dd>
-        </dl>
+        <div className="item">
+            <div className="title">{props.reducedTimeRecord.task.name}</div>
+            <div className="content">{toTimeString(props.reducedTimeRecord.totalTimeMillis)}</div>
+        </div>
     )
 }
 
@@ -60,7 +60,7 @@ export class TimeRecords extends React.Component<Props, State> {
     renderTimeRecordElements() {
         if (this.state.timeRecords.length === 0) {
             return (
-                <p>No records found of this day.</p>
+                <p className="item">No records found of this day.</p>
             )
         }
         return distinctReduce(this.state.timeRecords).map((reducedTimeRecord, i) => {
@@ -73,18 +73,20 @@ export class TimeRecords extends React.Component<Props, State> {
     render() {
         return (
             <div>
-                <div className="ui pagination menu">
-                    <a onClick={this.handlePrevClick.bind(this)} className="item">
+                <div className="ui secondary three item menu">
+                    <a className="left item" onClick={this.handlePrevClick.bind(this)}>
                         <i className="angle left icon"></i>
                     </a>
-                    <div className="disabled item">
+                    <div className="item">
                         {this.state.targetDay.toString()}
                     </div>
-                    <a onClick={this.handleNextClick.bind(this)} className="item">
+                    <a className="right item" onClick={this.handleNextClick.bind(this)}>
                         <i className="angle right icon"></i>
                     </a>
                 </div>
-                {this.renderTimeRecordElements()}
+                <div className="ui divided items">
+                    {this.renderTimeRecordElements()}
+                </div>
             </div>
         )
     }
