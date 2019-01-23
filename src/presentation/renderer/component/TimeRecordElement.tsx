@@ -26,10 +26,10 @@ export class TimeRecordElement extends React.Component<Props, State> {
     renderRecords() {
         return this.props.reducedTimeRecord.timeRecords.map((record, i) => {
             return (
-                <div className="disabled item" key={i}>
-                    {toClockString(record.startTime)}
+                <div className="disabled item" key={i} style={{ pointerEvents: 'unset' }}>
+                    <span title={toSecondsClockString(record.startTime)}>{toClockString(record.startTime)}</span>
                     {' - '}
-                    {toClockString(record.endTime)}
+                    <span title={toSecondsClockString(record.endTime)}>{toClockString(record.endTime)}</span>
                 </div>
             )
         })
@@ -79,5 +79,9 @@ function toTimeString(millis: number): string {
 }
 
 function toClockString(millis: number): string {
+    return moment(millis).format('HH:mm')
+}
+
+function toSecondsClockString(millis: number): string {
     return moment(millis).format('HH:mm:ss')
 }
