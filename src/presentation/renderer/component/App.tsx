@@ -35,8 +35,9 @@ export class App extends React.Component<Props, State> {
             return page == this.state.page ? { display: 'block' } : { display: 'none' }
         }
         return (
-            <div>
-                <div className="ui borderless pointing labeled icon three item menu">
+            <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                <div className="ui inverted attached borderless labeled icon three item menu"
+                    style={{ backgroundColor: '#003366' }}>
                     <a className={"item" + active.call(this, Page.TASKS)} onClick={this.switchPage.bind(this, Page.TASKS)}>
                         <i className="tasks icon"></i>
                         Tasks
@@ -50,7 +51,8 @@ export class App extends React.Component<Props, State> {
                         Settings
                     </a>
                 </div>
-                <div className="ui padded basic container segment">
+                <div className="no-scrollbar ui padded basic container segment"
+                    style={{ flex: 1, overflow: 'auto' }}>
                     <div style={visibility.call(this, Page.TASKS)}>
                         <Tasks />
                     </div>

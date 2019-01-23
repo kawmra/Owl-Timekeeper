@@ -69,7 +69,7 @@ export class Tasks extends React.Component<Props, State> {
             value={this.state.tempTaskName}
             placeholder="Task Name"
             onChange={(element) => { this.setState({ tempTaskName: element.target.value }) }} />
-          <button onClick={this.handleAddTask.bind(this)} className="ui button">Add Task</button>
+          <button className="ui blue button" onClick={this.handleAddTask.bind(this)}>Add Task</button>
         </div>
         <div className="ui divided items">
           {

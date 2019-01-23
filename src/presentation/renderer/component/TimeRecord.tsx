@@ -2,7 +2,8 @@ import React = require("react");
 import { TimeRecord } from "../../../domain/timeRecord";
 import { useCases, remoteDay } from "../remote";
 import { Day } from "../../../domain/day";
-import { Task } from "../../../domain/task";
+import { ReducedTimeRecord } from "./ReducedTimeRecord";
+import { TimeRecordElement } from "./TimeRecordElement";
 
 interface Props {
     day: Day
@@ -11,15 +12,6 @@ interface Props {
 interface State {
     timeRecords: TimeRecord[]
     targetDay: Day
-}
-
-const TimeRecordElement = (props: { reducedTimeRecord: ReducedTimeRecord }) => {
-    return (
-        <div className="item">
-            <div className="title">{props.reducedTimeRecord.task.name}</div>
-            <div className="content">{toTimeString(props.reducedTimeRecord.totalTimeMillis)}</div>
-        </div>
-    )
 }
 
 export class TimeRecords extends React.Component<Props, State> {
@@ -90,24 +82,6 @@ export class TimeRecords extends React.Component<Props, State> {
             </div>
         )
     }
-}
-
-function toTimeString(millis: number): string {
-    const seconds = millis / 1000
-    const h = Math.floor(seconds / 3600)
-    const m = Math.floor(seconds % 3600 / 60)
-    const s = Math.floor(seconds % 60)
-    var str = ""
-    if (h !== 0) str += `${h}h `
-    if (m !== 0) str += `${m}m `
-    if (s !== 0) str += `${s}s`
-    return str
-}
-
-interface ReducedTimeRecord {
-    task: Task
-    totalTimeMillis: number
-    timeRecords: TimeRecord[]
 }
 
 function distinctReduce(records: TimeRecord[]): ReducedTimeRecord[] {
