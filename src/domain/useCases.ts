@@ -16,8 +16,16 @@ export async function createTask(name: string): Promise<Task> {
     return task
 }
 
-export async function deleteTask(task: Task): Promise<void> {
-    await taskRepository.remove(task)
+export async function deleteTask(taskId: string): Promise<void> {
+    await taskRepository.remove(taskId)
+    console.log(`task deleted (id: ${taskId})`)
+}
+
+export async function updateTaskName(taskId: string, newName: string): Promise<void> {
+    await Promise.all([
+        taskRepository.update({ id: taskId, name: newName }),
+        timeRecordRepository.updateTaskName(taskId, newName),
+    ])
 }
 
 export async function getTasks(): Promise<Task[]> {

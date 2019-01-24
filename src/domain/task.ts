@@ -10,7 +10,12 @@ export interface ActiveTask {
 
 export interface TaskRepository {
     add(task: Task): Promise<void>
-    remove(task: Task): Promise<void>
+    remove(taskId: string): Promise<void>
+    /**
+     * Update a task with same id as specified task.
+     * @param task new task
+     */
+    update(task: Task): Promise<void>
     selectAll(): Promise<Task[]>
     exists(taskName: string): Promise<boolean>
 }

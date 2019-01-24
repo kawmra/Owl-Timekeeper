@@ -34,9 +34,21 @@ export class DbTaskRepository implements TaskRepository {
         })
     }
 
-    remove(task: Task): Promise<void> {
+    remove(taskId: string): Promise<void> {
         return new Promise((resolve, reject) => {
-            this.db.remove({ name: task.name }, {}, (err, num) => {
+            this.db.remove({ id: taskId }, {}, (err, num) => {
+                if (err) {
+                    reject(err)
+                    return
+                }
+                resolve()
+            })
+        })
+    }
+
+    update(task: Task): Promise<void> {
+        return new Promise((resolve, reject) => {
+            this.db.update({ id: task.id }, task, {}, err => {
                 if (err) {
                     reject(err)
                     return

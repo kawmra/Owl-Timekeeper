@@ -16,6 +16,18 @@ export class DbTimeRecordRepository implements TimeRecordRepository {
         return Promise.resolve()
     }
 
+    updateTaskName(taskId: string, newName: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            this.db.update({ "task.id": taskId }, { $set: { "task.name": newName } }, {}, err => {
+                if (err) {
+                    reject(err)
+                    return
+                }
+                resolve()
+            })
+        })
+    }
+
     select(day: Day): Promise<TimeRecord[]> {
         return new Promise((resolve, reject) => {
             const dayStart = day.toMillis()
