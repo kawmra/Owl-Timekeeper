@@ -52,7 +52,11 @@ export class TimeRecords extends React.Component<Props, State> {
     renderTimeRecordElements() {
         if (this.state.timeRecords.length === 0) {
             return (
-                <p className="item">No records found of this day.</p>
+                <div className="item">
+                    <div className="ui center aligned basic segment">
+                        No records found of this day.
+                    </div>
+                </div>
             )
         }
         return distinctReduce(this.state.timeRecords).map((reducedTimeRecord, i) => {
