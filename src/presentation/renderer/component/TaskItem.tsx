@@ -28,7 +28,7 @@ export class TaskItem extends React.Component<Props, State> {
                 <div className="ui small fluid action input">
                     <input type="text" placeholder={this.props.task.name} onChange={(e) => this.setState({ editingTaskName: e.target.value })} value={this.state.editingTaskName} />
                     <button className="ui teal button">Complete</button>
-                    <button className="ui left icon button">
+                    <button className="ui icon button" onClick={() => this.setState({ editMode: false, editingTaskName: this.props.task.name })}>
                         <i className="close icon"></i>
                     </button>
                 </div>
