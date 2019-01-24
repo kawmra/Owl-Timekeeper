@@ -2,16 +2,26 @@
 <html>
 
 <haed>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" type="text/css" href="./node_modules/semantic-ui-css/semantic.css" />
   <style>
-    body {
-      font-family: sans-serif;
+    .no-scrollbar::-webkit-scrollbar {
+      width: 0 !important;
+      height: 0 !important;
+    }
+
+    .no-scrollbar::-webkit-scrollbar-thumb {
+      background: none !important;
+    }
+
+    .no-scrollbar::-webkit-scrollbar-track {
+      background: none !important;
     }
   </style>
 </haed>
 
 <body>
-  <h1>Hello, Electron world!</h1>
-  <div id="app"></div>
+  <div id="app" style="height: 100%;"></div>
   <script>require('./dist/presentation/renderer/content.js')</script>
 </body>
 

@@ -2,7 +2,8 @@ import React = require("react");
 import { TimeRecord } from "../../../domain/timeRecord";
 import { useCases, remoteDay } from "../remote";
 import { Day } from "../../../domain/day";
-import { Task } from "../../../domain/task";
+import { ReducedTimeRecord } from "./ReducedTimeRecord";
+import { TimeRecordElement } from "./TimeRecordElement";
 
 interface Props {
     day: Day
@@ -11,15 +12,6 @@ interface Props {
 interface State {
     timeRecords: TimeRecord[]
     targetDay: Day
-}
-
-const TimeRecordElement = (props: { reducedTimeRecord: ReducedTimeRecord }) => {
-    return (
-        <dl>
-            <dt>{props.reducedTimeRecord.task.name}</dt>
-            <dd>{toTimeString(props.reducedTimeRecord.totalTimeMillis)}</dd>
-        </dl>
-    )
 }
 
 export class TimeRecords extends React.Component<Props, State> {
@@ -60,7 +52,7 @@ export class TimeRecords extends React.Component<Props, State> {
     renderTimeRecordElements() {
         if (this.state.timeRecords.length === 0) {
             return (
-                <p>No records found of this day.</p>
+                <p className="item">No records found of this day.</p>
             )
         }
         return distinctReduce(this.state.timeRecords).map((reducedTimeRecord, i) => {
@@ -73,33 +65,23 @@ export class TimeRecords extends React.Component<Props, State> {
     render() {
         return (
             <div>
-                <p>
-                    <button onClick={this.handlePrevClick.bind(this)}>&lt;</button>
-                    {this.state.targetDay.toString()}
-                    <button onClick={this.handleNextClick.bind(this)}>&gt;</button>
-                </p>
-                {this.renderTimeRecordElements()}
+                <div className="ui secondary three item menu">
+                    <a className="left item" onClick={this.handlePrevClick.bind(this)}>
+                        <i className="angle left icon"></i>
+                    </a>
+                    <div className="item">
+                        {this.state.targetDay.toString()}
+                    </div>
+                    <a className="right item" onClick={this.handleNextClick.bind(this)}>
+                        <i className="angle right icon"></i>
+                    </a>
+                </div>
+                <div className="ui divided items">
+                    {this.renderTimeRecordElements()}
+                </div>
             </div>
         )
     }
-}
-
-function toTimeString(millis: number): string {
-    const seconds = millis / 1000
-    const h = Math.floor(seconds / 3600)
-    const m = Math.floor(seconds % 3600 / 60)
-    const s = Math.floor(seconds % 60)
-    var str = ""
-    if (h !== 0) str += `${h}h `
-    if (m !== 0) str += `${m}m `
-    if (s !== 0) str += `${s}s`
-    return str
-}
-
-interface ReducedTimeRecord {
-    task: Task
-    totalTimeMillis: number
-    timeRecords: TimeRecord[]
 }
 
 function distinctReduce(records: TimeRecord[]): ReducedTimeRecord[] {
