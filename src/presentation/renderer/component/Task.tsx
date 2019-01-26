@@ -2,26 +2,13 @@ import React = require('react');
 import { Task } from '../../../domain/task';
 import { useCases, tray, dialog } from '../remote';
 import { ERROR_TASK_ALREADY_EXISTS } from '../../../data/task/DbTaskRepository';
+import { TaskItem } from './TaskItem';
 
 interface Props { }
 
 interface State {
   tempTaskName: string,
   tasks: Task[]
-}
-
-export const TaskItem = (props: { task: Task }) => {
-  return (
-    <div className="item">
-      <div className="aligned content">
-        {props.task.name}
-        <div className="right floated item">
-          <i className="edit link icon"></i>
-          <i className="trash link icon"></i>
-        </div>
-      </div>
-    </div>
-  )
 }
 
 export class Tasks extends React.Component<Props, State> {
@@ -41,6 +28,28 @@ export class Tasks extends React.Component<Props, State> {
   refreshTasks() {
     useCases.getTasks().then((tasks: Task[]) => {
       this.setState({ tasks })
+    })
+  }
+
+  handleDeleteTask(target: Task) {
+    dialog.showMessageBox({
+      message: `Are you sure you want to delete the task \`${target.name}\`?\n\nYou will not be able to undo this action.`,
+      buttons: ['Yes, Delete', 'No'],
+      cancelId: 1,
+    }, response => {
+      if (response === 0) {
+        useCases.deleteTask(target.id).then(() => {
+          this.refreshTasks()
+          tray.update()
+        })
+      }
+    })
+  }
+
+  handleEditTask(target: Task) {
+    useCases.updateTaskName(target.id, target.name).then(() => {
+      this.refreshTasks()
+      tray.update()
     })
   }
 
@@ -75,7 +84,11 @@ export class Tasks extends React.Component<Props, State> {
           {
             this.state.tasks.map((task: Task) => {
               return (
-                <TaskItem key={task.name} task={task} />
+                <TaskItem
+                  key={task.id}
+                  task={task}
+                  onEdit={this.handleEditTask.bind(this)}
+                  onDelete={this.handleDeleteTask.bind(this)} />
               )
             })
           }

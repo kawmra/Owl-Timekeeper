@@ -1,7 +1,7 @@
 import { Tray, nativeImage, Menu, dialog, MenuItem } from "electron"
 import * as path from "path"
 import { Task, ActiveTask } from "../../domain/task"
-import { setActiveTask, getActiveTask, addTimeRecord, clearActiveTask, getTasks, getTimeRecords } from "../../domain/useCases";
+import { setActiveTask, getActiveTask, addTimeRecord, clearActiveTask, getTasks, getTimeRecords, existsTask } from "../../domain/useCases";
 import { TimeRecord } from "../../domain/timeRecord";
 import { Day } from "../../domain/day";
 
@@ -25,25 +25,28 @@ function mapToMenuItem(task: Task): Electron.MenuItemConstructorOptions {
 }
 
 async function switchTask(task: Task) {
-    const now = new Date().getTime()
     const oldActiveTask = await getActiveTask()
-    if (oldActiveTask !== null) {
+    if (oldActiveTask !== null && await existsTask(oldActiveTask.task.id)) {
+        // No need to `addTimeRecord` if oldActiveTask already deleted,
+        // because it makes no sense to record time for that task
+        const now = new Date().getTime()
         await addTimeRecord(oldActiveTask.task, oldActiveTask.startTime, now)
         console.log(`Saved TimeRecord of ${oldActiveTask.task.name}`)
     }
-    if (oldActiveTask !== null && oldActiveTask.task.name === task.name) {
+    if (oldActiveTask !== null && oldActiveTask.task.id === task.id) {
         await clearActiveTask()
         console.log('Cleared activeTask')
     } else {
         await setActiveTask(task)
-        console.log(`Switch task to ${task ? task.name : 'none'}!`)
+        console.log(`Switch task to '${task ? `${task.name} (${task.id})` : 'none'}'`)
     }
     update()
 }
 
 export function createMenu(tasks: Array<Task>, activeTask: ActiveTask = null): Menu {
+    console.log('createMenu; tasks: ', tasks, ' activeTask: ', activeTask)
     const taskItems: Electron.MenuItemConstructorOptions[] = tasks.map(task => {
-        const checked = activeTask !== null && task.name === activeTask.task.name
+        const checked = activeTask !== null && task.id === activeTask.task.id
         return {
             ...mapToMenuItem(task),
             checked,
@@ -72,9 +75,13 @@ export async function update() {
     }
     console.log('update!')
     const tasks = await getTasks()
+    console.log('update; tasks: ', tasks)
     const activeTask = await getActiveTask()
+    console.log('update; activeTask: ', activeTask)
     const menu = createMenu(tasks, activeTask)
-    tray.setTitle(activeTask ? activeTask.task.name : '')
+    const activeTaskExists = activeTask && await existsTask(activeTask.task.id)
+    tray.setTitle(activeTaskExists ? activeTask.task.name : '')
+    tray.setToolTip(activeTaskExists ? activeTask.task.name : 'Owl Time Keeper')
     tray.setContextMenu(menu)
 }
 
