@@ -14,7 +14,7 @@ export class DbTaskRepository implements TaskRepository {
 
     add(task: Task): Promise<void> {
         return new Promise((resolve, reject) => {
-            this.db.count({ name: task.name }, (err, n) => {
+            this.db.count({ id: task.id }, (err, n) => {
                 if (err) {
                     reject(err)
                     return
@@ -70,9 +70,9 @@ export class DbTaskRepository implements TaskRepository {
         })
     }
 
-    exists(taskName: string): Promise<boolean> {
+    exists(taskId: string): Promise<boolean> {
         return new Promise((resolve, reject) => {
-            this.db.count({ name: taskName }, (err, n) => {
+            this.db.count({ id: taskId }, (err, n) => {
                 if (err) {
                     reject(err)
                     return

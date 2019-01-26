@@ -17,11 +17,11 @@ export interface TaskRepository {
      */
     update(task: Task): Promise<void>
     selectAll(): Promise<Task[]>
-    exists(taskName: string): Promise<boolean>
+    exists(taskId: string): Promise<boolean>
 }
 
 export interface ActiveTaskRepository {
     getActiveTask(): Promise<ActiveTask | null>
-    setActiveTask(task: Task): Promise<ActiveTask>
+    setActiveTask(activeTask: ActiveTask): Promise<void>
     clearActiveTask(): Promise<void>
 }

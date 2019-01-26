@@ -25,25 +25,31 @@ export class Tasks extends React.Component<Props, State> {
     this.refreshTasks()
   }
 
-  deleteTask(target: Task) {
+  refreshTasks() {
+    useCases.getTasks().then((tasks: Task[]) => {
+      this.setState({ tasks })
+    })
+  }
+
+  handleDeleteTask(target: Task) {
     dialog.showMessageBox({
       message: `Are you sure you want to delete the task \`${target.name}\`?\n\nYou will not be able to undo this action.`,
       buttons: ['Yes, Delete', 'No'],
       cancelId: 1,
     }, response => {
       if (response === 0) {
-        useCases.deleteTask(target.id)
-        this.refreshTasks()
+        useCases.deleteTask(target.id).then(() => {
+          this.refreshTasks()
+          tray.update()
+        })
       }
     })
   }
 
-  editTask(target: Task) {
-  }
-
-  refreshTasks() {
-    useCases.getTasks().then((tasks: Task[]) => {
-      this.setState({ tasks })
+  handleEditTask(target: Task) {
+    useCases.updateTaskName(target.id, target.name).then(() => {
+      this.refreshTasks()
+      tray.update()
     })
   }
 
@@ -79,10 +85,10 @@ export class Tasks extends React.Component<Props, State> {
             this.state.tasks.map((task: Task) => {
               return (
                 <TaskItem
-                  key={task.name}
+                  key={task.id}
                   task={task}
-                  onEdit={this.editTask.bind(this)}
-                  onDelete={this.deleteTask.bind(this)} />
+                  onEdit={this.handleEditTask.bind(this)}
+                  onDelete={this.handleDeleteTask.bind(this)} />
               )
             })
           }
