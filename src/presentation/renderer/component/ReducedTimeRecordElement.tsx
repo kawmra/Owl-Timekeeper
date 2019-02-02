@@ -1,6 +1,6 @@
 import React = require("react");
 import { ReducedTimeRecord } from "./ReducedTimeRecord";
-import moment = require("moment");
+import { TimeRecordItem } from "./TimeRecordItem";
 
 interface Props {
     reducedTimeRecord: ReducedTimeRecord
@@ -10,7 +10,7 @@ interface State {
     open: boolean
 }
 
-export class TimeRecordElement extends React.Component<Props, State> {
+export class ReducedTimeRecordElement extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
@@ -23,14 +23,21 @@ export class TimeRecordElement extends React.Component<Props, State> {
         this.setState({ open: !this.state.open })
     }
 
+    handleRecordOnEdit() {
+    }
+
+    handleRecordOnDelete() {
+    }
+
     renderRecords() {
         return this.props.reducedTimeRecord.timeRecords.map((record, i) => {
             return (
-                <div className="disabled item" key={i} style={{ pointerEvents: 'unset' }}>
-                    <span title={toSecondsClockString(record.startTime)}>{toClockString(record.startTime)}</span>
-                    {' - '}
-                    <span title={toSecondsClockString(record.endTime)}>{toClockString(record.endTime)}</span>
-                </div>
+                <TimeRecordItem
+                    key={i}
+                    timeRecord={record}
+                    onEdit={this.handleRecordOnEdit.bind(this)}
+                    onDelete={this.handleRecordOnDelete.bind(this)}
+                />
             )
         })
     }
@@ -47,8 +54,8 @@ export class TimeRecordElement extends React.Component<Props, State> {
                             <div style={{ margin: '0.5em 0' }}>{this.props.reducedTimeRecord.task.name}</div>
                         </div>
                         <div className="eight wide right aligned column">
-                            <div className="ui accordion" onClick={this.handleAccordionClick.bind(this)}>
-                                <div className={'title' + active.call(this)}>
+                            <div className="ui accordion">
+                                <div className={'title' + active.call(this)} onClick={this.handleAccordionClick.bind(this)}>
                                     <i className="dropdown icon"></i>
                                     {toTimeString(this.props.reducedTimeRecord.totalTimeMillis)}
                                 </div>
@@ -76,12 +83,4 @@ function toTimeString(millis: number): string {
     if (m !== 0) str += `${m}m `
     if (s !== 0) str += `${s}s`
     return str
-}
-
-function toClockString(millis: number): string {
-    return moment(millis).format('HH:mm')
-}
-
-function toSecondsClockString(millis: number): string {
-    return moment(millis).format('HH:mm:ss')
 }

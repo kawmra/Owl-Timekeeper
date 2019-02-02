@@ -3,7 +3,7 @@ import { TimeRecord } from "../../../domain/timeRecord";
 import { useCases, remoteDay } from "../remote";
 import { Day } from "../../../domain/day";
 import { ReducedTimeRecord } from "./ReducedTimeRecord";
-import { TimeRecordElement } from "./TimeRecordElement";
+import { ReducedTimeRecordElement } from "./ReducedTimeRecordElement";
 
 interface Props {
     day: Day
@@ -61,7 +61,7 @@ export class TimeRecords extends React.Component<Props, State> {
         }
         return distinctReduce(this.state.timeRecords).map((reducedTimeRecord, i) => {
             return (
-                <TimeRecordElement key={i} reducedTimeRecord={reducedTimeRecord} />
+                <ReducedTimeRecordElement key={i} reducedTimeRecord={reducedTimeRecord} />
             )
         })
     }
