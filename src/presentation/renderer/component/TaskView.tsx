@@ -12,7 +12,7 @@ interface State {
     editingTaskName: string
 }
 
-export class TaskItem extends React.Component<Props, State> {
+export class TaskView extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)

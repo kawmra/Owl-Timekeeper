@@ -1,16 +1,27 @@
 import React = require("react");
-import { ReducedTimeRecord } from "./ReducedTimeRecord";
-import moment = require("moment");
+import { TimeRecordDetailView } from "./TimeRecordDetailView";
+import { Task } from "../../../domain/task";
+import { TimeRecord } from "../../../domain/timeRecord";
+import { Day } from "../../../domain/day";
 
 interface Props {
-    reducedTimeRecord: ReducedTimeRecord
+    viewModel: TimeRecordViewModel
+    targetDay: Day
+    onTimeRecordEdit: (newTimeRecord: TimeRecord) => void
+    onTimeRecordDelete: (timeRecord: TimeRecord) => void
 }
 
 interface State {
     open: boolean
 }
 
-export class TimeRecordElement extends React.Component<Props, State> {
+export interface TimeRecordViewModel {
+    task: Task
+    totalTimeMillis: number
+    items: TimeRecord[]
+}
+
+export class TimeRecordView extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
@@ -23,14 +34,24 @@ export class TimeRecordElement extends React.Component<Props, State> {
         this.setState({ open: !this.state.open })
     }
 
+    handleOnRecordEdit(newRecord: TimeRecord) {
+        this.props.onTimeRecordEdit(newRecord)
+    }
+
+    handleOnRecordDelete(record: TimeRecord) {
+        this.props.onTimeRecordDelete(record)
+    }
+
     renderRecords() {
-        return this.props.reducedTimeRecord.timeRecords.map((record, i) => {
+        return this.props.viewModel.items.map(record => {
             return (
-                <div className="disabled item" key={i} style={{ pointerEvents: 'unset' }}>
-                    <span title={toSecondsClockString(record.startTime)}>{toClockString(record.startTime)}</span>
-                    {' - '}
-                    <span title={toSecondsClockString(record.endTime)}>{toClockString(record.endTime)}</span>
-                </div>
+                <TimeRecordDetailView
+                    key={record.id}
+                    timeRecord={record}
+                    targetDay={this.props.targetDay}
+                    onEdit={this.handleOnRecordEdit.bind(this)}
+                    onDelete={this.handleOnRecordDelete.bind(this)}
+                />
             )
         })
     }
@@ -44,13 +65,13 @@ export class TimeRecordElement extends React.Component<Props, State> {
                 <div className="ui grid">
                     <div className="row">
                         <div className="eight wide column">
-                            <div style={{ margin: '0.5em 0' }}>{this.props.reducedTimeRecord.task.name}</div>
+                            <div style={{ margin: '0.5em 0' }}>{this.props.viewModel.task.name}</div>
                         </div>
                         <div className="eight wide right aligned column">
-                            <div className="ui accordion" onClick={this.handleAccordionClick.bind(this)}>
-                                <div className={'title' + active.call(this)}>
+                            <div className="ui accordion">
+                                <div className={'title' + active.call(this)} onClick={this.handleAccordionClick.bind(this)}>
                                     <i className="dropdown icon"></i>
-                                    {toTimeString(this.props.reducedTimeRecord.totalTimeMillis)}
+                                    {toTimeString(this.props.viewModel.totalTimeMillis)}
                                 </div>
                                 <div className={'content' + active.call(this)}>
                                     <div className="ui list">
@@ -76,12 +97,4 @@ function toTimeString(millis: number): string {
     if (m !== 0) str += `${m}m `
     if (s !== 0) str += `${s}s`
     return str
-}
-
-function toClockString(millis: number): string {
-    return moment(millis).format('HH:mm')
-}
-
-function toSecondsClockString(millis: number): string {
-    return moment(millis).format('HH:mm:ss')
 }

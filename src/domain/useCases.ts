@@ -65,11 +65,24 @@ export async function clearActiveTask(): Promise<void> {
 }
 
 export async function addTimeRecord(task: Task, startTime: number, endTime: number): Promise<TimeRecord> {
-    const timeRecord = { task, startTime, endTime }
+    const timeRecord = { id: v4(), task, startTime, endTime }
     await timeRecordRepository.addTimeRecord(timeRecord)
     return timeRecord
 }
 
 export async function getTimeRecords(day: Day): Promise<TimeRecord[]> {
     return timeRecordRepository.select(day)
+}
+
+/**
+ * Update a single time record that has same id as specified timeRecord.
+ * 
+ * @param timeRecord new TimeRecord
+ */
+export async function updateTimeRecord(timeRecord: TimeRecord): Promise<void> {
+    return timeRecordRepository.update(timeRecord)
+}
+
+export async function deleteTimeRecord(id: string): Promise<void> {
+    return timeRecordRepository.delete(id)
 }

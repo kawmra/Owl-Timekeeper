@@ -2,7 +2,7 @@ import React = require('react');
 import { Task } from '../../../domain/task';
 import { useCases, tray, dialog } from '../remote';
 import { ERROR_TASK_ALREADY_EXISTS } from '../../../data/task/DbTaskRepository';
-import { TaskItem } from './TaskItem';
+import { TaskView } from './TaskView';
 
 interface Props { }
 
@@ -11,7 +11,7 @@ interface State {
   tasks: Task[]
 }
 
-export class Tasks extends React.Component<Props, State> {
+export class TasksView extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
@@ -84,7 +84,7 @@ export class Tasks extends React.Component<Props, State> {
           {
             this.state.tasks.map((task: Task) => {
               return (
-                <TaskItem
+                <TaskView
                   key={task.id}
                   task={task}
                   onEdit={this.handleEditTask.bind(this)}

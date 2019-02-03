@@ -2,24 +2,23 @@ import React = require("react");
 import { TimeRecord } from "../../../domain/timeRecord";
 import { useCases, remoteDay } from "../remote";
 import { Day } from "../../../domain/day";
-import { ReducedTimeRecord } from "./ReducedTimeRecord";
-import { TimeRecordElement } from "./TimeRecordElement";
+import { TimeRecordView, TimeRecordViewModel } from "./TimeRecordView";
 
 interface Props {
     day: Day
 }
 
 interface State {
-    timeRecords: TimeRecord[]
     targetDay: Day
+    timeRecordViewModels: TimeRecordViewModel[]
 }
 
-export class TimeRecords extends React.Component<Props, State> {
+export class TimeRecordsView extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
         this.state = {
-            timeRecords: [],
+            timeRecordViewModels: [],
             targetDay: this.props.day
         }
     }
@@ -35,7 +34,8 @@ export class TimeRecords extends React.Component<Props, State> {
         const obj = day.toObject()
         const rd = new remoteDay.Day(obj.year, obj.month, obj.day, obj.utcOffset)
         useCases.getTimeRecords(rd).then((timeRecords: TimeRecord[]) => {
-            this.setState({ targetDay: day, timeRecords })
+            const timeRecordViewModels = getTimeRecordViewModels(timeRecords)
+            this.setState({ targetDay: day, timeRecordViewModels })
         })
     }
 
@@ -49,8 +49,20 @@ export class TimeRecords extends React.Component<Props, State> {
         this.refreshTimeRecords(nextDay)
     }
 
+    handleOnTimeRecordEdit(newTimeRecord: TimeRecord) {
+        useCases.updateTimeRecord(newTimeRecord).then(() => {
+            this.refreshTimeRecords(this.state.targetDay)
+        })
+    }
+
+    handleOnTimeRecordDelete(timeRecord: TimeRecord) {
+        useCases.deleteTimeRecord(timeRecord.id).then(() => {
+            this.refreshTimeRecords(this.state.targetDay)
+        })
+    }
+
     renderTimeRecordElements() {
-        if (this.state.timeRecords.length === 0) {
+        if (this.state.timeRecordViewModels.length === 0) {
             return (
                 <div className="item">
                     <div className="ui center aligned basic segment">
@@ -59,9 +71,15 @@ export class TimeRecords extends React.Component<Props, State> {
                 </div>
             )
         }
-        return distinctReduce(this.state.timeRecords).map((reducedTimeRecord, i) => {
+        return this.state.timeRecordViewModels.map(viewModel => {
             return (
-                <TimeRecordElement key={i} reducedTimeRecord={reducedTimeRecord} />
+                <TimeRecordView
+                    key={viewModel.task.id}
+                    viewModel={viewModel}
+                    targetDay={this.state.targetDay}
+                    onTimeRecordEdit={this.handleOnTimeRecordEdit.bind(this)}
+                    onTimeRecordDelete={this.handleOnTimeRecordDelete.bind(this)}
+                />
             )
         })
     }
@@ -88,23 +106,17 @@ export class TimeRecords extends React.Component<Props, State> {
     }
 }
 
-function distinctReduce(records: TimeRecord[]): ReducedTimeRecord[] {
-    const temp: Map<string, ReducedTimeRecord> = new Map()
-    records.forEach(record => {
-        if (!temp.has(record.task.id)) {
-            temp.set(
-                record.task.id,
-                {
-                    task: record.task,
-                    totalTimeMillis: (record.endTime - record.startTime),
-                    timeRecords: [record]
-                }
-            )
-        } else {
-            const r = temp.get(record.task.id)
-            r.totalTimeMillis += (record.endTime - record.startTime)
-            r.timeRecords.push(record)
+function getTimeRecordViewModels(timeRecords: TimeRecord[]): TimeRecordViewModel[] {
+    const map: Map<string, TimeRecordViewModel> = new Map()
+    for (var i = 0, len = timeRecords.length; i < len; i++) {
+        const record = timeRecords[i]
+        if (!map.has(record.task.id)) {
+            const viewModel: TimeRecordViewModel = { task: record.task, items: [], totalTimeMillis: 0 }
+            map.set(record.task.id, viewModel)
         }
-    })
-    return Array.from(temp.values())
+        const viewModel = map.get(record.task.id)
+        viewModel.items.push(record)
+        viewModel.totalTimeMillis += (record.endTime - record.startTime)
+    }
+    return Array.from(map.values())
 }
