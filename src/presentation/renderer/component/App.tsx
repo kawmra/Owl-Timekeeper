@@ -1,6 +1,6 @@
 import React = require("react");
-import { Tasks } from "./Task";
-import { TimeRecords } from "./TimeRecord";
+import { TasksView } from "./TasksView";
+import { TimeRecordsView } from "./TimeRecordsView";
 import { Day } from "../../../domain/day";
 
 enum Page {
@@ -54,10 +54,10 @@ export class App extends React.Component<Props, State> {
                 <div className="no-scrollbar ui padded basic container segment"
                     style={{ flex: 1, overflow: 'auto' }}>
                     <div style={visibility.call(this, Page.TASKS)}>
-                        <Tasks />
+                        <TasksView />
                     </div>
                     <div style={visibility.call(this, Page.TIME_RECORDS)}>
-                        <TimeRecords day={Day.today()} />
+                        <TimeRecordsView day={Day.today()} />
                     </div>
                 </div>
             </div>

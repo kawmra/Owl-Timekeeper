@@ -1,16 +1,23 @@
 import React = require("react");
-import { ReducedTimeRecord } from "./ReducedTimeRecord";
-import { TimeRecordItem } from "./TimeRecordItem";
+import { TimeRecordDetailView } from "./TimeRecordDetailView";
+import { Task } from "../../../domain/task";
+import { TimeRecord } from "../../../domain/timeRecord";
 
 interface Props {
-    reducedTimeRecord: ReducedTimeRecord
+    viewModel: TimeRecordViewModel
 }
 
 interface State {
     open: boolean
 }
 
-export class ReducedTimeRecordElement extends React.Component<Props, State> {
+export interface TimeRecordViewModel {
+    task: Task
+    totalTimeMillis: number
+    items: TimeRecord[]
+}
+
+export class TimeRecordView extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
@@ -30,9 +37,9 @@ export class ReducedTimeRecordElement extends React.Component<Props, State> {
     }
 
     renderRecords() {
-        return this.props.reducedTimeRecord.timeRecords.map((record, i) => {
+        return this.props.viewModel.items.map((record, i) => {
             return (
-                <TimeRecordItem
+                <TimeRecordDetailView
                     key={i}
                     timeRecord={record}
                     onEdit={this.handleRecordOnEdit.bind(this)}
@@ -51,13 +58,13 @@ export class ReducedTimeRecordElement extends React.Component<Props, State> {
                 <div className="ui grid">
                     <div className="row">
                         <div className="eight wide column">
-                            <div style={{ margin: '0.5em 0' }}>{this.props.reducedTimeRecord.task.name}</div>
+                            <div style={{ margin: '0.5em 0' }}>{this.props.viewModel.task.name}</div>
                         </div>
                         <div className="eight wide right aligned column">
                             <div className="ui accordion">
                                 <div className={'title' + active.call(this)} onClick={this.handleAccordionClick.bind(this)}>
                                     <i className="dropdown icon"></i>
-                                    {toTimeString(this.props.reducedTimeRecord.totalTimeMillis)}
+                                    {toTimeString(this.props.viewModel.totalTimeMillis)}
                                 </div>
                                 <div className={'content' + active.call(this)}>
                                     <div className="ui list">

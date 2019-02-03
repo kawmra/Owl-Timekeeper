@@ -1,6 +1,7 @@
 import React = require("react");
 import { TimeRecord } from "../../../domain/timeRecord";
 import moment = require("moment");
+import { Task } from "../../../domain/task";
 
 interface Props {
     timeRecord: TimeRecord
@@ -27,7 +28,7 @@ const TimeEditor = (props: { timeText: string, onChange: (newText: string) => vo
     )
 }
 
-export class TimeRecordItem extends React.Component<Props, State> {
+export class TimeRecordDetailView extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
