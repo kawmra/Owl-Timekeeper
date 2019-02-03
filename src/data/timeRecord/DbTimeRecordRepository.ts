@@ -16,6 +16,18 @@ export class DbTimeRecordRepository implements TimeRecordRepository {
         return Promise.resolve()
     }
 
+    update(timeRecord: TimeRecord): Promise<void> {
+        return new Promise((resolve, reject) => {
+            this.db.update({ id: timeRecord.id }, timeRecord, {}, err => {
+                if (err) {
+                    reject(err)
+                    return
+                }
+                resolve()
+            })
+        })
+    }
+
     updateTaskName(taskId: string, newName: string): Promise<void> {
         return new Promise((resolve, reject) => {
             this.db.update({ "task.id": taskId }, { $set: { "task.name": newName } }, {}, err => {
@@ -50,6 +62,18 @@ export class DbTimeRecordRepository implements TimeRecordRepository {
                     return
                 }
                 resolve(docs)
+            })
+        })
+    }
+
+    delete(id: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            this.db.remove({ id }, err => {
+                if (err) {
+                    reject(err)
+                    return
+                }
+                resolve()
             })
         })
     }

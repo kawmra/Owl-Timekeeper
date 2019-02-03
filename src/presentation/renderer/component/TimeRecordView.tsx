@@ -2,9 +2,13 @@ import React = require("react");
 import { TimeRecordDetailView } from "./TimeRecordDetailView";
 import { Task } from "../../../domain/task";
 import { TimeRecord } from "../../../domain/timeRecord";
+import { Day } from "../../../domain/day";
 
 interface Props {
     viewModel: TimeRecordViewModel
+    targetDay: Day
+    onTimeRecordEdit: (newTimeRecord: TimeRecord) => void
+    onTimeRecordDelete: (timeRecord: TimeRecord) => void
 }
 
 interface State {
@@ -30,20 +34,23 @@ export class TimeRecordView extends React.Component<Props, State> {
         this.setState({ open: !this.state.open })
     }
 
-    handleRecordOnEdit() {
+    handleOnRecordEdit(newRecord: TimeRecord) {
+        this.props.onTimeRecordEdit(newRecord)
     }
 
-    handleRecordOnDelete() {
+    handleOnRecordDelete(record: TimeRecord) {
+        this.props.onTimeRecordDelete(record)
     }
 
     renderRecords() {
-        return this.props.viewModel.items.map((record, i) => {
+        return this.props.viewModel.items.map(record => {
             return (
                 <TimeRecordDetailView
-                    key={i}
+                    key={record.id}
                     timeRecord={record}
-                    onEdit={this.handleRecordOnEdit.bind(this)}
-                    onDelete={this.handleRecordOnDelete.bind(this)}
+                    targetDay={this.props.targetDay}
+                    onEdit={this.handleOnRecordEdit.bind(this)}
+                    onDelete={this.handleOnRecordDelete.bind(this)}
                 />
             )
         })

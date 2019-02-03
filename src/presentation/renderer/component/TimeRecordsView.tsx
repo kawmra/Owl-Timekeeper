@@ -49,6 +49,18 @@ export class TimeRecordsView extends React.Component<Props, State> {
         this.refreshTimeRecords(nextDay)
     }
 
+    handleOnTimeRecordEdit(newTimeRecord: TimeRecord) {
+        useCases.updateTimeRecord(newTimeRecord).then(() => {
+            this.refreshTimeRecords(this.state.targetDay)
+        })
+    }
+
+    handleOnTimeRecordDelete(timeRecord: TimeRecord) {
+        useCases.deleteTimeRecord(timeRecord.id).then(() => {
+            this.refreshTimeRecords(this.state.targetDay)
+        })
+    }
+
     renderTimeRecordElements() {
         if (this.state.timeRecordViewModels.length === 0) {
             return (
@@ -59,9 +71,15 @@ export class TimeRecordsView extends React.Component<Props, State> {
                 </div>
             )
         }
-        return this.state.timeRecordViewModels.map((viewModel, i) => {
+        return this.state.timeRecordViewModels.map(viewModel => {
             return (
-                <TimeRecordView key={i} viewModel={viewModel} />
+                <TimeRecordView
+                    key={viewModel.task.id}
+                    viewModel={viewModel}
+                    targetDay={this.state.targetDay}
+                    onTimeRecordEdit={this.handleOnTimeRecordEdit.bind(this)}
+                    onTimeRecordDelete={this.handleOnTimeRecordDelete.bind(this)}
+                />
             )
         })
     }
