@@ -1,8 +1,9 @@
 import React = require("react");
-import { TimeRecord } from "../../../domain/timeRecord";
+import { TimeRecord, compareTimeRecord } from "../../../domain/timeRecord";
 import { useCases, remoteDay } from "../remote";
 import { Day } from "../../../domain/day";
 import { TimeRecordView, TimeRecordViewModel } from "./TimeRecordView";
+import { compareTask } from "../../../domain/task";
 
 interface Props {
     day: Day
@@ -118,5 +119,12 @@ function getTimeRecordViewModels(timeRecords: TimeRecord[]): TimeRecordViewModel
         viewModel.items.push(record)
         viewModel.totalTimeMillis += (record.endTime - record.startTime)
     }
-    return Array.from(map.values())
+    const viewModels = Array.from(map.values())
+    viewModels.sort((a, b) => {
+        return compareTask(a.task, b.task)
+    })
+    viewModels.forEach(viewModel => {
+        viewModel.items.sort(compareTimeRecord)
+    })
+    return viewModels
 }

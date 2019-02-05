@@ -16,3 +16,9 @@ export interface TimeRecordRepository {
     selectAll(): Promise<TimeRecord[]>
     delete(id: string): Promise<void>
 }
+
+export function compareTimeRecord(a: TimeRecord, b: TimeRecord): number {
+    if (a.startTime > b.startTime) return 1
+    else if (a.startTime < b.startTime) return -1
+    else return 0
+}

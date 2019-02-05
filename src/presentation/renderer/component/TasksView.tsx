@@ -1,5 +1,5 @@
 import React = require('react');
-import { Task } from '../../../domain/task';
+import { Task, compareTask } from '../../../domain/task';
 import { useCases, tray, dialog } from '../remote';
 import { ERROR_TASK_ALREADY_EXISTS } from '../../../data/task/DbTaskRepository';
 import { TaskView } from './TaskView';
@@ -27,6 +27,7 @@ export class TasksView extends React.Component<Props, State> {
 
   refreshTasks() {
     useCases.getTasks().then((tasks: Task[]) => {
+      tasks.sort(compareTask)
       this.setState({ tasks })
     })
   }

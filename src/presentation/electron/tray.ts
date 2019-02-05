@@ -1,6 +1,6 @@
-import { Tray, nativeImage, Menu, dialog, MenuItem } from "electron"
+import { Tray, nativeImage, Menu, dialog } from "electron"
 import * as path from "path"
-import { Task, ActiveTask } from "../../domain/task"
+import { Task, ActiveTask, compareTask } from "../../domain/task"
 import { setActiveTask, getActiveTask, addTimeRecord, clearActiveTask, getTasks, getTimeRecords, existsTask } from "../../domain/useCases";
 import { TimeRecord } from "../../domain/timeRecord";
 import { Day } from "../../domain/day";
@@ -75,6 +75,7 @@ export async function update() {
     }
     console.log('update!')
     const tasks = await getTasks()
+    tasks.sort(compareTask)
     console.log('update; tasks: ', tasks)
     const activeTask = await getActiveTask()
     console.log('update; activeTask: ', activeTask)

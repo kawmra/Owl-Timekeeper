@@ -25,3 +25,9 @@ export interface ActiveTaskRepository {
     setActiveTask(activeTask: ActiveTask): Promise<void>
     clearActiveTask(): Promise<void>
 }
+
+export function compareTask(a: Task, b: Task): number {
+    if (a.name > b.name) return 1
+    else if (a.name < b.name) return -1
+    else return 0
+}
