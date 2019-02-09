@@ -5,6 +5,7 @@ import { v4 } from "uuid";
 import { DbTaskRepository } from "../data/task/DbTaskRepository";
 import { DbTimeRecordRepository } from "../data/timeRecord/DbTimeRecordRepository";
 import { FileActiveTaskRepository } from "../data/task/FileActiveTaskRepository";
+import { Observable, Subscription } from "../Observable";
 
 const taskRepository = new DbTaskRepository()
 const activeTaskRepository = new FileActiveTaskRepository()
@@ -44,6 +45,12 @@ export async function updateTaskName(taskId: string, newName: string): Promise<v
 
 export async function getTasks(): Promise<Task[]> {
     return taskRepository.selectAll()
+}
+
+export function observeTasks(listener: (tasks: Task[]) => void): Subscription {
+    const observable = taskRepository.observeAll()
+    observable.on(listener)
+    return new Subscription(observable, listener)
 }
 
 export async function existsTask(taskName: string): Promise<boolean> {

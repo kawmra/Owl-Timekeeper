@@ -3,6 +3,7 @@ import { Task, compareTask } from '../../../domain/task';
 import { useCases, tray, dialog } from '../remote';
 import { ERROR_TASK_ALREADY_EXISTS } from '../../../data/task/DbTaskRepository';
 import { TaskView } from './TaskView';
+import { Subscription } from '../../../Observable';
 
 interface Props { }
 
@@ -13,6 +14,8 @@ interface State {
 
 export class TasksView extends React.Component<Props, State> {
 
+  private tasksSubscription: Subscription
+
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -22,14 +25,14 @@ export class TasksView extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    this.refreshTasks()
-  }
-
-  refreshTasks() {
-    useCases.getTasks().then((tasks: Task[]) => {
+    this.tasksSubscription = useCases.observeTasks((tasks: Task[]) => {
       tasks.sort(compareTask)
       this.setState({ tasks })
     })
+  }
+
+  componentWillUnmount() {
+    this.tasksSubscription && this.tasksSubscription.unsubscribe()
   }
 
   handleDeleteTask(target: Task) {
@@ -39,28 +42,18 @@ export class TasksView extends React.Component<Props, State> {
       cancelId: 1,
     }, response => {
       if (response === 0) {
-        useCases.deleteTask(target.id).then(() => {
-          this.refreshTasks()
-          tray.update()
-        })
+        useCases.deleteTask(target.id)
       }
     })
   }
 
   handleEditTask(target: Task) {
-    useCases.updateTaskName(target.id, target.name).then(() => {
-      this.refreshTasks()
-      tray.update()
-    })
+    useCases.updateTaskName(target.id, target.name)
   }
 
   handleAddTask(element: HTMLElement) {
     this.setState({ tempTaskName: '' })
     useCases.createTask(this.state.tempTaskName)
-      .then(() => {
-        tray.update()
-        this.refreshTasks()
-      })
       .catch((err: any) => {
         if (err === ERROR_TASK_ALREADY_EXISTS) {
           dialog.showMessageBox({ message: `The task '${this.state.tempTaskName}' aready exists.` })
