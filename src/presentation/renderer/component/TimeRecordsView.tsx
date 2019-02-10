@@ -88,7 +88,7 @@ export class TimeRecordsView extends React.Component<Props, State> {
         return this.state.timeRecordViewModels.map(viewModel => {
             return (
                 <TimeRecordView
-                    key={viewModel.task.id}
+                    key={`${this.state.targetDay.toString()}-${viewModel.task.id}`}
                     viewModel={viewModel}
                     targetDay={this.state.targetDay}
                     onTimeRecordEdit={this.handleOnTimeRecordEdit.bind(this)}
