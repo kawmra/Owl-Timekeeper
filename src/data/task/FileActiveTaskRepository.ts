@@ -68,11 +68,11 @@ export class FileActiveTaskRepository implements ActiveTaskRepository {
 
 class ActiveTaskObservable extends Observable<ActiveTask | null> {
 
-    protected subscribe(listener: (payload: ActiveTask) => void): void {
-        this.source.on(EVENT_ON_ACTIVE_TASK_CHANGED, listener)
+    protected subscribe(source: EventEmitter, listener: (payload: ActiveTask) => void): void {
+        source.on(EVENT_ON_ACTIVE_TASK_CHANGED, listener)
     }
 
-    protected unsubscribe(listener: (payload: ActiveTask) => void): void {
-        this.source.off(EVENT_ON_ACTIVE_TASK_CHANGED, listener)
+    protected unsubscribe(source: EventEmitter, listener: (payload: ActiveTask) => void): void {
+        source.off(EVENT_ON_ACTIVE_TASK_CHANGED, listener)
     }
 }

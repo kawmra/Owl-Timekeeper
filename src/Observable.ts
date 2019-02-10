@@ -4,7 +4,7 @@ type Listener<T> = (payload: T) => void
 
 export abstract class Observable<T> {
 
-    protected source: EventEmitter
+    private source: EventEmitter
 
     private cache: T | null = null
 
@@ -23,7 +23,7 @@ export abstract class Observable<T> {
     }
 
     public on(listener: Listener<T>) {
-        this.subscribe((payload: T) => {
+        this.subscribe(this.source, (payload: T) => {
             this.cache = payload
             listener(payload)
         })
@@ -35,12 +35,12 @@ export abstract class Observable<T> {
 
     public off(listener: Listener<T>) {
         this.rawListeners.delete(listener)
-        this.unsubscribe(listener)
+        this.unsubscribe(this.source, listener)
     }
 
-    protected abstract subscribe(listener: Listener<T>): void
+    protected abstract subscribe(source: EventEmitter, listener: Listener<T>): void
 
-    protected abstract unsubscribe(listener: Listener<T>): void
+    protected abstract unsubscribe(source: EventEmitter, listener: Listener<T>): void
 }
 
 export class Subscription {

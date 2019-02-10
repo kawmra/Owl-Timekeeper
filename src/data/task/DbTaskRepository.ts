@@ -123,11 +123,11 @@ export class DbTaskRepository implements TaskRepository {
 
 class TaskObservable extends Observable<Task[]> {
 
-    protected subscribe(listener: (payload: Task[]) => void): void {
-        this.source.on(EVENT_ON_TASK_CHANGED, listener)
+    protected subscribe(source: EventEmitter, listener: (payload: Task[]) => void): void {
+        source.on(EVENT_ON_TASK_CHANGED, listener)
     }
 
-    protected unsubscribe(listener: (payload: Task[]) => void): void {
-        this.source.off(EVENT_ON_TASK_CHANGED, listener)
+    protected unsubscribe(source: EventEmitter, listener: (payload: Task[]) => void): void {
+        source.off(EVENT_ON_TASK_CHANGED, listener)
     }
 }
