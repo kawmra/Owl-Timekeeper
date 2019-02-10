@@ -18,7 +18,7 @@ export class DbTaskRepository implements TaskRepository {
 
     private emitter = new EventEmitter()
 
-    private emitTimer: NodeJS.Timeout
+    private promises: Map<Promise<any>, boolean> = new Map()
 
     add(task: Task): Promise<void> {
         return new Promise((resolve, reject) => {
@@ -98,12 +98,26 @@ export class DbTaskRepository implements TaskRepository {
     }
 
     private emitTasksChanged() {
-        clearTimeout(this.emitTimer)
-        this.emitTimer = setTimeout(() => {
-            this.selectAll().then(tasks => {
-                this.emitter.emit(EVENT_ON_TASK_CHANGED, tasks)
-            })
-        }, 100)
+        // Invalidate all previous promises
+        this.promises.forEach((_, key) => {
+            this.promises.set(key, false)
+        })
+        const promise = this.selectAll()
+        this.promises.set(promise, true)
+        promise.then(tasks => {
+            const isValid = this.promises.get(promise)
+            this.promises.delete(promise)
+            // If this promise is marked as invalid, abort.
+            if (!isValid) {
+                console.log('emitTasksChanged; marked as invalid, abort.')
+                return
+            }
+            this.emitter.emit(EVENT_ON_TASK_CHANGED, tasks)
+        })
+        promise.catch(() => {
+            // Clean up
+            this.promises.delete(promise)
+        })
     }
 }
 
