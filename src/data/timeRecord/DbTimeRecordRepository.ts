@@ -30,7 +30,7 @@ export class DbTimeRecordRepository implements TimeRecordRepository {
 
     updateTaskName(taskId: string, newName: string): Promise<void> {
         return new Promise((resolve, reject) => {
-            this.db.update({ "task.id": taskId }, { $set: { "task.name": newName } }, {}, err => {
+            this.db.update({ "task.id": taskId }, { $set: { "task.name": newName } }, { multi: true }, err => {
                 if (err) {
                     reject(err)
                     return
