@@ -25,7 +25,7 @@ export async function deleteTask(taskId: string): Promise<void> {
 export async function updateTaskName(taskId: string, newName: string): Promise<void> {
     async function updateActiveTaskName() {
         const currentActiveTask = await activeTaskRepository.getActiveTask()
-        if (currentActiveTask.task.id !== taskId) {
+        if (!currentActiveTask || currentActiveTask.task.id !== taskId) {
             return
         }
         await activeTaskRepository.setActiveTask({
