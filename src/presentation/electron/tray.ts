@@ -1,7 +1,7 @@
 import { Tray, nativeImage, Menu, dialog } from "electron"
 import * as path from "path"
 import { Task, ActiveTask, compareTask } from "../../domain/task"
-import { setActiveTask, getActiveTask, addTimeRecord, clearActiveTask, getTasks, getTimeRecords, existsTask, observeTasks } from "../../domain/useCases";
+import { setActiveTask, getActiveTask, addTimeRecord, clearActiveTask, getTasks, getTimeRecords, existsTask, observeTasks, observeActiveTask } from "../../domain/useCases";
 import { TimeRecord } from "../../domain/timeRecord";
 import { Day } from "../../domain/day";
 
@@ -14,9 +14,11 @@ export function createTray() {
     const icon = nativeImage.createFromPath(path.join(__dirname, "../../../res/starTemplate.png"))
     tray = new Tray(icon)
     tray.setToolTip('This is my application.')
-    observeTasks((tasks) => {
-        tasks.sort(compareTask)
+    observeTasks(tasks => {
         updateWithTasks(tasks)
+    })
+    observeActiveTask(activeTask => {
+        updateWithActiveTask(activeTask)
     })
 }
 
@@ -48,7 +50,6 @@ async function switchTask(task: Task) {
 }
 
 export function createMenu(tasks: Array<Task>, activeTask: ActiveTask = null): Menu {
-    console.log('createMenu; tasks: ', tasks, ' activeTask: ', activeTask)
     const taskItems: Electron.MenuItemConstructorOptions[] = tasks.map(task => {
         const checked = activeTask !== null && task.id === activeTask.task.id
         return {
@@ -77,15 +78,16 @@ async function updateWithTasks(_tasks: Task[]) {
     updateWith(_tasks, undefined)
 }
 
-async function updateWithActiveTask(_activeTask: ActiveTask) {
+async function updateWithActiveTask(_activeTask: ActiveTask | null) {
     updateWith(undefined, _activeTask)
 }
 
-async function updateWith(_tasks: Task[], _activeTask: ActiveTask) {
+async function updateWith(_tasks: Task[], _activeTask: ActiveTask | null) {
     if (tray === null) {
         return
     }
     const tasks = _tasks || await getTasks()
+    tasks.sort(compareTask)
     const activeTask = _activeTask || await getActiveTask()
     const menu = createMenu(tasks, activeTask)
     const activeTaskExists = activeTask && await existsTask(activeTask.task.id)

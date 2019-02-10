@@ -67,6 +67,12 @@ export async function getActiveTask(): Promise<ActiveTask | null> {
     return await activeTaskRepository.getActiveTask()
 }
 
+export function observeActiveTask(listener: (activeTask: ActiveTask | null) => void): Subscription {
+    const observable = activeTaskRepository.observeActiveTask()
+    observable.on(listener)
+    return new Subscription(observable, listener)
+}
+
 export async function clearActiveTask(): Promise<void> {
     return activeTaskRepository.clearActiveTask()
 }

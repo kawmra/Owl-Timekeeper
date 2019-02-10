@@ -25,6 +25,7 @@ export interface TaskRepository {
 
 export interface ActiveTaskRepository {
     getActiveTask(): Promise<ActiveTask | null>
+    observeActiveTask(): Observable<ActiveTask | null>
     setActiveTask(activeTask: ActiveTask): Promise<void>
     clearActiveTask(): Promise<void>
 }
