@@ -1,7 +1,7 @@
 import { Tray, nativeImage, Menu, dialog } from "electron"
 import * as path from "path"
 import { Task, ActiveTask, compareTask } from "../../domain/task"
-import { setActiveTask, getActiveTask, addTimeRecord, clearActiveTask, getTasks, getTimeRecords, existsTask } from "../../domain/useCases";
+import { setActiveTask, getActiveTask, addTimeRecord, clearActiveTask, getTasks, getTimeRecords, existsTask, observeTasks, observeActiveTask } from "../../domain/useCases";
 import { TimeRecord } from "../../domain/timeRecord";
 import { Day } from "../../domain/day";
 
@@ -14,7 +14,12 @@ export function createTray() {
     const icon = nativeImage.createFromPath(path.join(__dirname, "../../../res/starTemplate.png"))
     tray = new Tray(icon)
     tray.setToolTip('This is my application.')
-    update()
+    observeTasks(tasks => {
+        updateWithTasks(tasks)
+    })
+    observeActiveTask(activeTask => {
+        updateWithActiveTask(activeTask)
+    })
 }
 
 function mapToMenuItem(task: Task): Electron.MenuItemConstructorOptions {
@@ -33,18 +38,18 @@ async function switchTask(task: Task) {
         await addTimeRecord(oldActiveTask.task, oldActiveTask.startTime, now)
         console.log(`Saved TimeRecord of ${oldActiveTask.task.name}`)
     }
+    let newActiveTask = null
     if (oldActiveTask !== null && oldActiveTask.task.id === task.id) {
         await clearActiveTask()
         console.log('Cleared activeTask')
     } else {
-        await setActiveTask(task)
+        newActiveTask = await setActiveTask(task)
         console.log(`Switch task to '${task ? `${task.name} (${task.id})` : 'none'}'`)
     }
-    update()
+    updateWithActiveTask(newActiveTask)
 }
 
 export function createMenu(tasks: Array<Task>, activeTask: ActiveTask = null): Menu {
-    console.log('createMenu; tasks: ', tasks, ' activeTask: ', activeTask)
     const taskItems: Electron.MenuItemConstructorOptions[] = tasks.map(task => {
         const checked = activeTask !== null && task.id === activeTask.task.id
         return {
@@ -69,16 +74,21 @@ export function createMenu(tasks: Array<Task>, activeTask: ActiveTask = null): M
     return Menu.buildFromTemplate(template)
 }
 
-export async function update() {
-    if (tray == null) {
+async function updateWithTasks(_tasks: Task[]) {
+    updateWith(_tasks, undefined)
+}
+
+async function updateWithActiveTask(_activeTask: ActiveTask | null) {
+    updateWith(undefined, _activeTask)
+}
+
+async function updateWith(_tasks: Task[], _activeTask: ActiveTask | null) {
+    if (tray === null) {
         return
     }
-    console.log('update!')
-    const tasks = await getTasks()
+    const tasks = _tasks || await getTasks()
     tasks.sort(compareTask)
-    console.log('update; tasks: ', tasks)
-    const activeTask = await getActiveTask()
-    console.log('update; activeTask: ', activeTask)
+    const activeTask = _activeTask || await getActiveTask()
     const menu = createMenu(tasks, activeTask)
     const activeTaskExists = activeTask && await existsTask(activeTask.task.id)
     tray.setTitle(activeTaskExists ? activeTask.task.name : '')

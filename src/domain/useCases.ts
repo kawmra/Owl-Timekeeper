@@ -5,6 +5,7 @@ import { v4 } from "uuid";
 import { DbTaskRepository } from "../data/task/DbTaskRepository";
 import { DbTimeRecordRepository } from "../data/timeRecord/DbTimeRecordRepository";
 import { FileActiveTaskRepository } from "../data/task/FileActiveTaskRepository";
+import { Observable, Subscription } from "../Observable";
 
 const taskRepository = new DbTaskRepository()
 const activeTaskRepository = new FileActiveTaskRepository()
@@ -24,7 +25,7 @@ export async function deleteTask(taskId: string): Promise<void> {
 export async function updateTaskName(taskId: string, newName: string): Promise<void> {
     async function updateActiveTaskName() {
         const currentActiveTask = await activeTaskRepository.getActiveTask()
-        if (currentActiveTask.task.id !== taskId) {
+        if (!currentActiveTask || currentActiveTask.task.id !== taskId) {
             return
         }
         await activeTaskRepository.setActiveTask({
@@ -46,6 +47,12 @@ export async function getTasks(): Promise<Task[]> {
     return taskRepository.selectAll()
 }
 
+export function observeTasks(listener: (tasks: Task[]) => void): Subscription {
+    const observable = taskRepository.observeAll()
+    observable.on(listener)
+    return new Subscription(observable, listener)
+}
+
 export async function existsTask(taskName: string): Promise<boolean> {
     return taskRepository.exists(taskName)
 }
@@ -60,6 +67,12 @@ export async function getActiveTask(): Promise<ActiveTask | null> {
     return await activeTaskRepository.getActiveTask()
 }
 
+export function observeActiveTask(listener: (activeTask: ActiveTask | null) => void): Subscription {
+    const observable = activeTaskRepository.observeActiveTask()
+    observable.on(listener)
+    return new Subscription(observable, listener)
+}
+
 export async function clearActiveTask(): Promise<void> {
     return activeTaskRepository.clearActiveTask()
 }
@@ -72,6 +85,12 @@ export async function addTimeRecord(task: Task, startTime: number, endTime: numb
 
 export async function getTimeRecords(day: Day): Promise<TimeRecord[]> {
     return timeRecordRepository.select(day)
+}
+
+export function observeTimeRecords(day: Day, listener: (records: TimeRecord[]) => void): Subscription {
+    const observable = timeRecordRepository.observe(day)
+    observable.on(listener)
+    return new Subscription(observable, listener)
 }
 
 /**

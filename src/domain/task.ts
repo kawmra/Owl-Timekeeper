@@ -1,3 +1,5 @@
+import { Observable } from "../Observable";
+
 export interface Task {
     id: string
     name: string
@@ -17,11 +19,13 @@ export interface TaskRepository {
      */
     update(task: Task): Promise<void>
     selectAll(): Promise<Task[]>
+    observeAll(): Observable<Task[]>
     exists(taskId: string): Promise<boolean>
 }
 
 export interface ActiveTaskRepository {
     getActiveTask(): Promise<ActiveTask | null>
+    observeActiveTask(): Observable<ActiveTask | null>
     setActiveTask(activeTask: ActiveTask): Promise<void>
     clearActiveTask(): Promise<void>
 }

@@ -2,10 +2,16 @@ import { ActiveTaskRepository, ActiveTask, Task } from "../../domain/task";
 import * as path from "path";
 import { app } from "electron";
 import fs = require('fs');
+import { Observable } from "../../Observable";
+import { EventEmitter } from "events";
 
 const filePath = path.join(app.getPath('userData'), 'activeTask.json')
 
+const EVENT_ON_ACTIVE_TASK_CHANGED = 'onActiveTaskChanged'
+
 export class FileActiveTaskRepository implements ActiveTaskRepository {
+
+    private emitter = new EventEmitter()
 
     getActiveTask(): Promise<ActiveTask | null> {
         return new Promise(resolve => {
@@ -16,7 +22,6 @@ export class FileActiveTaskRepository implements ActiveTaskRepository {
                     return
                 }
                 const json: any = JSON.parse(data.toString())
-                console.log("getActiveTask(); ", json)
                 if (json.task === undefined || json.startTime === undefined) {
                     console.log('activeTask file was found but has no `task` and/or `startTime`')
                     resolve(null)
@@ -24,6 +29,10 @@ export class FileActiveTaskRepository implements ActiveTaskRepository {
                 resolve({ task: json.task, startTime: json.startTime })
             })
         })
+    }
+
+    observeActiveTask(): Observable<ActiveTask | null> {
+        return new ActiveTaskObservable(this.emitter, this.getActiveTask())
     }
 
     setActiveTask(activeTask: ActiveTask): Promise<void> {
@@ -34,6 +43,7 @@ export class FileActiveTaskRepository implements ActiveTaskRepository {
                     return
                 }
                 resolve()
+                this.emitActiveTaskChanged(activeTask)
             })
         })
     }
@@ -46,7 +56,23 @@ export class FileActiveTaskRepository implements ActiveTaskRepository {
                     return
                 }
                 resolve()
+                this.emitActiveTaskChanged(null)
             })
         })
+    }
+
+    private emitActiveTaskChanged(activeTask: ActiveTask | null) {
+        this.emitter.emit(EVENT_ON_ACTIVE_TASK_CHANGED, activeTask)
+    }
+}
+
+class ActiveTaskObservable extends Observable<ActiveTask | null> {
+
+    protected subscribe(source: EventEmitter, listener: (payload: ActiveTask) => void): void {
+        source.on(EVENT_ON_ACTIVE_TASK_CHANGED, listener)
+    }
+
+    protected unsubscribe(source: EventEmitter, listener: (payload: ActiveTask) => void): void {
+        source.off(EVENT_ON_ACTIVE_TASK_CHANGED, listener)
     }
 }
