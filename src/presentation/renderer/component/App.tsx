@@ -59,6 +59,11 @@ export class App extends React.Component<Props, State> {
                     <div style={visibility.call(this, Page.TIME_RECORDS)}>
                         <TimeRecordsView day={Day.today()} />
                     </div>
+                    <div style={visibility.call(this, Page.SETTINGS)}>
+                        <div className="ui basic center aligned segment">
+                            Nothing to show for now.
+                        </div>
+                    </div>
                 </div>
             </div>
         )
