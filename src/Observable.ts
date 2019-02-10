@@ -8,6 +8,9 @@ export abstract class Observable<T> {
 
     private cache: T | null = null
 
+    // raw to wrapper
+    private wrapperMap: Map<Listener<T>, Listener<T>> = new Map()
+
     private rawListeners: Set<Listener<T>> = new Set()
 
     constructor(source: EventEmitter, defaultValue: Promise<T> = undefined) {
@@ -23,10 +26,12 @@ export abstract class Observable<T> {
     }
 
     public on(listener: Listener<T>) {
-        this.subscribe(this.source, (payload: T) => {
+        const wrapper = (payload: T) => {
             this.cache = payload
             listener(payload)
-        })
+        }
+        this.wrapperMap.set(listener, wrapper)
+        this.subscribe(this.source, wrapper)
         if (this.cache !== null) {
             listener(this.cache)
         }
@@ -34,8 +39,10 @@ export abstract class Observable<T> {
     }
 
     public off(listener: Listener<T>) {
+        const wrapper = this.wrapperMap.get(listener)
+        this.wrapperMap.delete(listener)
         this.rawListeners.delete(listener)
-        this.unsubscribe(this.source, listener)
+        this.unsubscribe(this.source, wrapper)
     }
 
     protected abstract subscribe(source: EventEmitter, listener: Listener<T>): void
