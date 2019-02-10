@@ -22,13 +22,54 @@ export class TaskView extends React.Component<Props, State> {
         }
     }
 
+    handleOnEditClick() {
+        this.props.onEdit({
+            ...this.props.task,
+            name: this.state.editingTaskName
+        });
+        this.setState({ editMode: false })
+    }
+
+    handleOnCancelClick() {
+        this.setState({
+            editMode: false,
+            editingTaskName: this.props.task.name
+        })
+    }
+
+    handleOnKeyPress(e: React.KeyboardEvent<HTMLInputElement>) {
+        // Handling 'Enter' with onKeyPress because onKeyDown will be fired on deciding Kanji characters too.
+        switch (e.key) {
+            case 'Enter':
+                this.handleOnEditClick()
+                break
+        }
+    }
+
+    handleOnKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+        // Handling 'Escape' with onKeyDown because onKeyPress doesn't report 'Escape' key event.
+        switch (e.key) {
+            case 'Escape':
+                this.handleOnCancelClick()
+                break
+        }
+    }
+
     renderEditor() {
         return (
             <div className="content">
                 <div className="ui small fluid action input">
-                    <input type="text" placeholder={this.props.task.name} onChange={(e) => this.setState({ editingTaskName: e.target.value })} value={this.state.editingTaskName} />
-                    <button className="ui teal button" onClick={() => { this.props.onEdit({ ...this.props.task, name: this.state.editingTaskName }); this.setState({ editMode: false }) }}>Complete</button>
-                    <button className="ui icon button" onClick={() => this.setState({ editMode: false, editingTaskName: this.props.task.name })}>
+                    <input
+                        type="text"
+                        placeholder={this.props.task.name}
+                        onChange={(e) => this.setState({ editingTaskName: e.target.value })}
+                        onKeyPress={this.handleOnKeyPress.bind(this)}
+                        onKeyDown={this.handleOnKeyDown.bind(this)}
+                        value={this.state.editingTaskName}
+                        autoFocus={true}
+                    />
+                    <button className="ui teal button" onClick={this.handleOnEditClick.bind(this)}>Complete</button>
+                    <button className="ui icon button" onClick={this.handleOnCancelClick.bind(this)}>
                         <i className="close icon"></i>
                     </button>
                 </div>

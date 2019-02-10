@@ -5,6 +5,9 @@ import { Day } from "../../../domain/day";
 interface EditorProps {
     time: number
     day: Day
+    onEnterPressed: () => void
+    onEscapePressed: () => void
+    autoFocus?: boolean
 }
 
 interface EditorState {
@@ -38,6 +41,24 @@ class TimeEditor extends React.Component<EditorProps, EditorState> {
         return toMillisFromClockString(this.state.editingText, this.props.day)
     }
 
+    handleOnKeyPress(e: React.KeyboardEvent<HTMLInputElement>) {
+        // Handling 'Enter' with onKeyPress because onKeyDown will be fired on deciding Kanji characters too.
+        switch (e.key) {
+            case 'Enter':
+                this.props.onEnterPressed()
+                break
+        }
+    }
+
+    handleOnKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+        // Handling 'Escape' with onKeyDown because onKeyPress doesn't report 'Escape' key event.
+        switch (e.key) {
+            case 'Escape':
+                this.props.onEscapePressed()
+                break
+        }
+    }
+
     render() {
         return (
             <input
@@ -46,8 +67,11 @@ class TimeEditor extends React.Component<EditorProps, EditorState> {
                 pattern="^[0-9]{2,}:[0-9]{2}:[0-9]{2}$" // See NOTE comment of this class
                 size={8}
                 onChange={e => this.setState({ editingText: e.target.value })}
+                onKeyPress={this.handleOnKeyPress.bind(this)}
+                onKeyDown={this.handleOnKeyDown.bind(this)}
                 value={this.state.editingText}
                 placeholder={toSecondsClockString(this.props.time, this.props.day)}
+                autoFocus={this.props.autoFocus}
             />
         )
     }
@@ -97,6 +121,10 @@ export class TimeRecordDetailView extends React.Component<Props, State> {
         this.props.onDelete(this.props.timeRecord)
     }
 
+    handleCancelClick() {
+        this.setState({ editMode: false })
+    }
+
     renderEditor() {
         return (
             <div className="item ui mini input">
@@ -104,19 +132,24 @@ export class TimeRecordDetailView extends React.Component<Props, State> {
                     ref={this.startTimeEditor}
                     time={this.props.timeRecord.startTime}
                     day={this.props.targetDay}
+                    onEnterPressed={this.handleEditClick.bind(this)}
+                    onEscapePressed={this.handleCancelClick.bind(this)}
+                    autoFocus={true}
                 />
                 {' - '}
                 <TimeEditor
                     ref={this.endTimeEditor}
                     time={this.props.timeRecord.endTime}
                     day={this.props.targetDay}
+                    onEnterPressed={this.handleEditClick.bind(this)}
+                    onEscapePressed={this.handleCancelClick.bind(this)}
                 />
                 {' '}
                 <button className="ui mini teal icon button" onClick={this.handleEditClick.bind(this)}>
                     {/* I know `icon button` is misuse but it looks to fit this UI. */}
                     Save
                 </button>
-                <p>or <a href="#" onClick={() => this.setState({ editMode: false })}>Cancel</a></p>
+                <p>or <a href="#" onClick={this.handleCancelClick.bind(this)}>Cancel</a></p>
             </div>
         )
     }

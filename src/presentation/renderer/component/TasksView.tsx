@@ -51,7 +51,7 @@ export class TasksView extends React.Component<Props, State> {
     useCases.updateTaskName(target.id, target.name)
   }
 
-  handleAddTask(element: HTMLElement) {
+  handleAddTask() {
     this.setState({ tempTaskName: '' })
     useCases.createTask(this.state.tempTaskName)
       .catch((err: any) => {
@@ -71,7 +71,9 @@ export class TasksView extends React.Component<Props, State> {
             type="text"
             value={this.state.tempTaskName}
             placeholder="Task Name"
-            onChange={(element) => { this.setState({ tempTaskName: element.target.value }) }} />
+            onChange={(element) => { this.setState({ tempTaskName: element.target.value }) }}
+            onKeyPress={e => e.key === 'Enter' && this.handleAddTask()}
+          />
           <button className="ui blue button" onClick={this.handleAddTask.bind(this)}>Add Task</button>
         </div>
         <div className="ui divided items">
