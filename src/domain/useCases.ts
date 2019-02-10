@@ -87,6 +87,12 @@ export async function getTimeRecords(day: Day): Promise<TimeRecord[]> {
     return timeRecordRepository.select(day)
 }
 
+export function observeTimeRecords(day: Day, listener: (records: TimeRecord[]) => void): Subscription {
+    const observable = timeRecordRepository.observe(day)
+    observable.on(listener)
+    return new Subscription(observable, listener)
+}
+
 /**
  * Update a single time record that has same id as specified timeRecord.
  * 

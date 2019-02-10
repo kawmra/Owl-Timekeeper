@@ -24,6 +24,11 @@ export class Day {
         return new Day(now.year(), now.month(), now.date(), now.utcOffset())
     }
 
+    static fromMillis(millis: number, utcOffset: number = moment().utcOffset()): Day {
+        const m = moment(millis).utcOffset(utcOffset)
+        return new Day(m.year(), m.month(), m.date(), m.utcOffset())
+    }
+
     toString(format: string = 'YYYY-MM-DD', utcOffset: number = this.time.utcOffset()): string {
         return this.time.clone().utcOffset(utcOffset).format(format)
     }
@@ -39,6 +44,13 @@ export class Day {
             day: this.time.date(),
             utcOffset: this.time.utcOffset()
         }
+    }
+
+    equals(day: Day): boolean {
+        if (!day) {
+            return false
+        }
+        return this.toMillis() === day.toMillis()
     }
 
     /**

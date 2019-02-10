@@ -4,6 +4,7 @@ import { useCases, remoteDay } from "../remote";
 import { Day } from "../../../domain/day";
 import { TimeRecordView, TimeRecordViewModel } from "./TimeRecordView";
 import { compareTask } from "../../../domain/task";
+import { Subscription } from "../../../Observable";
 
 interface Props {
     day: Day
@@ -16,6 +17,8 @@ interface State {
 
 export class TimeRecordsView extends React.Component<Props, State> {
 
+    private timeRecordsSubscription: Subscription
+
     constructor(props: Props) {
         super(props)
         this.state = {
@@ -25,41 +28,43 @@ export class TimeRecordsView extends React.Component<Props, State> {
     }
 
     componentDidMount() {
-        this.refreshTimeRecords(this.props.day)
+        this.observeTimeRecords(this.props.day)
     }
 
-    refreshTimeRecords(day: Day) {
+    componentWillUnmount() {
+        this.timeRecordsSubscription && this.timeRecordsSubscription.unsubscribe()
+    }
+
+    observeTimeRecords(day: Day) {
+        this.timeRecordsSubscription && this.timeRecordsSubscription.unsubscribe()
         // We have to create *remote* Day instance.
         // Because here is renderer process, but `getTimeRecords()` will be executed on main process.
         // If we don't do so, states of the day instance will be broken (maybe all instance fields become undefined).
         const obj = day.toObject()
         const rd = new remoteDay.Day(obj.year, obj.month, obj.day, obj.utcOffset)
-        useCases.getTimeRecords(rd).then((timeRecords: TimeRecord[]) => {
-            const timeRecordViewModels = getTimeRecordViewModels(timeRecords)
+        this.timeRecordsSubscription = useCases.observeTimeRecords(rd, (records: TimeRecord[]) => {
+            console.log(`listened; targetDay: ${day}`)
+            const timeRecordViewModels = getTimeRecordViewModels(records)
             this.setState({ targetDay: day, timeRecordViewModels })
         })
     }
 
     handlePrevClick() {
         const prevDay = this.state.targetDay.addDay(-1)
-        this.refreshTimeRecords(prevDay)
+        this.observeTimeRecords(prevDay)
     }
 
     handleNextClick() {
         const nextDay = this.state.targetDay.addDay(1)
-        this.refreshTimeRecords(nextDay)
+        this.observeTimeRecords(nextDay)
     }
 
     handleOnTimeRecordEdit(newTimeRecord: TimeRecord) {
-        useCases.updateTimeRecord(newTimeRecord).then(() => {
-            this.refreshTimeRecords(this.state.targetDay)
-        })
+        useCases.updateTimeRecord(newTimeRecord)
     }
 
     handleOnTimeRecordDelete(timeRecord: TimeRecord) {
-        useCases.deleteTimeRecord(timeRecord.id).then(() => {
-            this.refreshTimeRecords(this.state.targetDay)
-        })
+        useCases.deleteTimeRecord(timeRecord.id)
     }
 
     renderTimeRecordElements() {

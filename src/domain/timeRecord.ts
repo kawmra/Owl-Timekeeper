@@ -1,5 +1,6 @@
 import { Day } from "./day";
 import { Task } from "./task";
+import { Observable } from "../Observable";
 
 export interface TimeRecord {
     id: string
@@ -13,6 +14,7 @@ export interface TimeRecordRepository {
     update(timeRecord: TimeRecord): Promise<void>
     updateTaskName(taskId: string, newName: string): Promise<void>
     select(day: Day): Promise<TimeRecord[]>
+    observe(day: Day): Observable<TimeRecord[]>
     selectAll(): Promise<TimeRecord[]>
     delete(id: string): Promise<void>
 }
