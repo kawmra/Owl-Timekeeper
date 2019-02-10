@@ -42,7 +42,9 @@ export abstract class Observable<T> {
         const wrapper = this.wrapperMap.get(listener)
         this.wrapperMap.delete(listener)
         this.rawListeners.delete(listener)
-        this.unsubscribe(this.source, wrapper)
+        if (wrapper) {
+            this.unsubscribe(this.source, wrapper)
+        }
     }
 
     protected abstract subscribe(source: EventEmitter, listener: Listener<T>): void
