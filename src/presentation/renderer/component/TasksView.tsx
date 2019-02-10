@@ -52,6 +52,9 @@ export class TasksView extends React.Component<Props, State> {
   }
 
   handleAddTask() {
+    if (this.state.tempTaskName === '') {
+      return
+    }
     this.setState({ tempTaskName: '' })
     useCases.createTask(this.state.tempTaskName)
       .catch((err: any) => {
