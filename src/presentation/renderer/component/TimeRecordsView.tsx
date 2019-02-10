@@ -1,6 +1,6 @@
 import React = require("react");
 import { TimeRecord, compareTimeRecord } from "../../../domain/timeRecord";
-import { useCases, remoteDay } from "../remote";
+import { useCases, remoteDay, dialog } from "../remote";
 import { Day } from "../../../domain/day";
 import { TimeRecordView, TimeRecordViewModel } from "./TimeRecordView";
 import { compareTask } from "../../../domain/task";
@@ -64,7 +64,15 @@ export class TimeRecordsView extends React.Component<Props, State> {
     }
 
     handleOnTimeRecordDelete(timeRecord: TimeRecord) {
-        useCases.deleteTimeRecord(timeRecord.id)
+        dialog.showMessageBox({
+            message: `Are you sure you want to delete the record of \`${timeRecord.task.name}\`?\n\nYou will not be able to undo this action.`,
+            buttons: ['Yes, Delete', 'No'],
+            cancelId: 1,
+        }, response => {
+            if (response === 0) {
+                useCases.deleteTimeRecord(timeRecord.id)
+            }
+        })
     }
 
     renderTimeRecordElements() {
