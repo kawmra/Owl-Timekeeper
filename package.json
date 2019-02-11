@@ -11,7 +11,7 @@
   "scripts": {
     "build": "yarn & tsc",
     "build-prod": "yarn & tsc --sourceMap false",
-    "start": "build & electron compiled-src/presentation/electron/main.js",
+    "start": "yarn build & electron compiled-src/presentation/electron/main.js",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "clean": "rm -rf dist compiled-src"
