@@ -15,9 +15,9 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
-   inkscape:export-filename="/Users/kawamura/Documents/Studies/electron/parcel-electron/res/starTemplate@2x.png"
-   inkscape:export-xdpi="180"
-   inkscape:export-ydpi="180"
+   inkscape:export-filename="/Users/kawamura/Documents/Works/OwlTimeKeeper/build/icon.png"
+   inkscape:export-xdpi="5760"
+   inkscape:export-ydpi="5760"
    sodipodi:docname="star.svg">
   <defs
      id="defs4" />
@@ -29,7 +29,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="5.3913462"
-     inkscape:cx="30"
+     inkscape:cx="0.60103467"
      inkscape:cy="28.571429"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -48,7 +48,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>

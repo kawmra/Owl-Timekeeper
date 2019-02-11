@@ -1,0 +1,7 @@
+{
+    "appId": "com.kawmra.owltimekeeper",
+    "productName": "Owl Timekeeper",
+    "mac": {
+        "category": "public.app-category.productivity"
+    }
+}

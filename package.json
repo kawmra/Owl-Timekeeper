@@ -1,23 +1,36 @@
 {
   "name": "owl-timekeeper",
-  "version": "1.0.0",
+  "version": "0.0.1",
+  "description": "Owl Timekeeper is a simple timekeeper application.",
+  "author": {
+    "name": "kawmra",
+    "url": "https://kawmra.com"
+  },
   "license": "MIT",
+  "main": "compiled-src/presentation/electron/main.js",
   "scripts": {
     "build": "yarn & tsc",
-    "start": "electron dist/presentation/electron/main.js"
+    "build-prod": "yarn & tsc --sourceMap false",
+    "start": "build & electron compiled-src/presentation/electron/main.js",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "clean": "rm -rf dist compiled-src"
   },
   "dependencies": {
-    "@types/nedb": "^1.8.7",
-    "@types/react": "^16.7.18",
-    "@types/react-dom": "^16.0.11",
-    "@types/uuid": "^3.4.4",
-    "electron": "^4.0.0",
     "moment": "^2.23.0",
     "nedb": "^1.8.0",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "semantic-ui-css": "^2.4.1",
-    "typescript": "^3.2.2",
     "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/nedb": "^1.8.7",
+    "@types/react": "^16.7.18",
+    "@types/react-dom": "^16.0.11",
+    "@types/uuid": "^3.4.4",
+    "electron": "^4.0.0",
+    "electron-builder": "^20.38.5",
+    "typescript": "^3.2.2"
   }
 }
