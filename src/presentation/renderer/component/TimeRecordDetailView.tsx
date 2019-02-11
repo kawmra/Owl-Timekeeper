@@ -156,7 +156,7 @@ export class TimeRecordDetailView extends React.Component<Props, State> {
 
     renderNormal() {
         return (
-            <div className="disabled item" style={{ pointerEvents: 'unset' }} onMouseEnter={() => this.setState({ hover: true })} onMouseLeave={() => this.setState({ hover: false })}>
+            <div className="disabled item" style={{ pointerEvents: 'unset' }} onMouseOver={() => this.setState({ hover: true })} onMouseLeave={() => this.setState({ hover: false })}>
                 <p>
                     <span style={{ display: this.state.hover ? "unset" : "none" }}>
                         <i className="link edit icon" onClick={() => { this.setState({ editMode: true }) }} />
