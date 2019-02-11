@@ -5,7 +5,7 @@ import { v4 } from "uuid";
 import { DbTaskRepository } from "../data/task/DbTaskRepository";
 import { DbTimeRecordRepository } from "../data/timeRecord/DbTimeRecordRepository";
 import { FileActiveTaskRepository } from "../data/task/FileActiveTaskRepository";
-import { Observable, Subscription } from "../Observable";
+import { Subscription } from "../Observable";
 
 const taskRepository = new DbTaskRepository()
 const activeTaskRepository = new FileActiveTaskRepository()
