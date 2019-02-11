@@ -9,6 +9,7 @@ function createWindow() {
     mainWindow = new BrowserWindow({
         height: 400,
         width: 560,
+        title: "Owl Timekeeper",
     })
 
     // and load the index.html of the app.
