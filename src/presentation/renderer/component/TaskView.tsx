@@ -68,7 +68,9 @@ export class TaskView extends React.Component<Props, State> {
                         value={this.state.editingTaskName}
                         autoFocus={true}
                     />
-                    <button className="ui teal button" onClick={this.handleOnEditClick.bind(this)}>Complete</button>
+                    <button className="ui teal button" onClick={this.handleOnEditClick.bind(this)}>
+                        Save
+                    </button>
                     <button className="ui icon button" onClick={this.handleOnCancelClick.bind(this)}>
                         <i className="close icon"></i>
                     </button>
