@@ -11,14 +11,12 @@ export abstract class Observable<T> {
     // raw to wrapper
     private wrapperMap: Map<Listener<T>, Listener<T>> = new Map()
 
-    private rawListeners: Set<Listener<T>> = new Set()
-
     constructor(source: EventEmitter, defaultValue: Promise<T> = undefined) {
         this.source = source
         if (defaultValue !== undefined) {
             defaultValue.then(value => {
                 this.cache = value
-                this.rawListeners.forEach(listener => {
+                this.wrapperMap.forEach((_, listener) => {
                     listener(value)
                 })
             })
@@ -26,6 +24,10 @@ export abstract class Observable<T> {
     }
 
     public on(listener: Listener<T>) {
+        if (this.wrapperMap.has(listener)) {
+            // Already specified listener listens this Observable
+            return
+        }
         const wrapper = (payload: T) => {
             this.cache = payload
             listener(payload)
@@ -35,13 +37,11 @@ export abstract class Observable<T> {
         if (this.cache !== null) {
             listener(this.cache)
         }
-        this.rawListeners.add(listener)
     }
 
     public off(listener: Listener<T>) {
         const wrapper = this.wrapperMap.get(listener)
         this.wrapperMap.delete(listener)
-        this.rawListeners.delete(listener)
         if (wrapper) {
             this.unsubscribe(this.source, wrapper)
         }
