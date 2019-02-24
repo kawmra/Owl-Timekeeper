@@ -70,7 +70,7 @@ export class StorageSetting extends React.Component<Props, State> {
                         <label>
                             The path to the directory where save data to
                         </label>
-                        <div className={"ui input" + (this.state.editMode ? "" : " disabled")}>
+                        <div className={"ui input" + (this.state.editMode ? " action" : " disabled")}>
                             <input
                                 type="text"
                                 value={this.state.editorPath}
