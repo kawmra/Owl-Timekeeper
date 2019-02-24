@@ -24,8 +24,8 @@ export class DbTimeRecordRepository implements TimeRecordRepository {
     addTimeRecord(timeRecord: TimeRecord): Promise<void> {
         this.db.insert(timeRecord)
         return new Promise(resolve => {
-            resolve()
             this.emitTimeRecordChanged(Day.fromMillis(timeRecord.startTime))
+            resolve()
         })
     }
 
@@ -36,8 +36,8 @@ export class DbTimeRecordRepository implements TimeRecordRepository {
                     reject(err)
                     return
                 }
-                resolve()
                 this.emitTimeRecordChanged(Day.fromMillis(timeRecord.startTime))
+                resolve()
             })
         })
     }
@@ -49,8 +49,8 @@ export class DbTimeRecordRepository implements TimeRecordRepository {
                     reject(err)
                     return
                 }
-                resolve()
                 this.emitTimeRecordChangedByUpdateTaskName(taskId)
+                resolve()
             })
         })
     }
@@ -98,8 +98,8 @@ export class DbTimeRecordRepository implements TimeRecordRepository {
                         reject(err)
                         return
                     }
-                    resolve()
                     this.emitTimeRecordChanged(Day.fromMillis(record.startTime))
+                    resolve()
                 })
             })
         })

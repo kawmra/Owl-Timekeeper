@@ -6,7 +6,7 @@ import { Observable } from "../../Observable";
 
 export const ERROR_TASK_ALREADY_EXISTS = 'task already exists'
 
-const FILE_NAME = 'task.db'
+const FILE_NAME = 'tasks.db'
 const EVENT_ON_TASK_CHANGED = 'onTaskChanged'
 
 export class DbTaskRepository implements TaskRepository {
