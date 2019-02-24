@@ -6,17 +6,21 @@ import { app } from "electron";
 import { Observable } from "../../Observable";
 import { EventEmitter } from 'events';
 
+const FILE_NAME = 'timeRecords.db'
 // Parameters: day: Day, records_of_the_day: TimeRecord[]
 const EVENT_ON_TIME_RECORD_CHANGED = 'onTimeRecordChanged'
 
 export class DbTimeRecordRepository implements TimeRecordRepository {
 
-    private db = new Nedb({
-        filename: path.join(app.getPath('userData'), 'timeRecords.db'),
-        autoload: true
-    })
-
+    private db: Nedb
     private emitter = new EventEmitter()
+
+    constructor(dirPath: string) {
+        this.db = new Nedb({
+            filename: path.join(dirPath, FILE_NAME),
+            autoload: true
+        })
+    }
 
     addTimeRecord(timeRecord: TimeRecord): Promise<void> {
         this.db.insert(timeRecord)

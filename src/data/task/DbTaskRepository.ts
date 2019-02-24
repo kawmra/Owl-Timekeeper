@@ -1,24 +1,26 @@
 import { TaskRepository, Task } from "../../domain/task";
 import Nedb = require("nedb");
 import * as path from "path"
-import { app } from "electron";
 import { EventEmitter } from "events";
 import { Observable } from "../../Observable";
 
 export const ERROR_TASK_ALREADY_EXISTS = 'task already exists'
 
+const FILE_NAME = 'task.db'
 const EVENT_ON_TASK_CHANGED = 'onTaskChanged'
 
 export class DbTaskRepository implements TaskRepository {
 
-    private db = new Nedb({
-        filename: path.join(app.getPath('userData'), 'tasks.db'),
-        autoload: true
-    })
-
+    private db: Nedb
     private emitter = new EventEmitter()
-
     private promises: Map<Promise<any>, boolean> = new Map()
+
+    constructor(dirPath: string) {
+        this.db = new Nedb({
+            filename: path.join(dirPath, FILE_NAME),
+            autoload: true
+        })
+    }
 
     add(task: Task): Promise<void> {
         return new Promise((resolve, reject) => {
