@@ -2,7 +2,6 @@ import { TimeRecordRepository, TimeRecord } from "../../domain/timeRecord";
 import { Day } from "../../domain/day";
 import Nedb = require("nedb");
 import * as path from "path"
-import { app } from "electron";
 import { Observable } from "../../Observable";
 import { EventEmitter } from 'events';
 

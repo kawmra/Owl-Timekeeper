@@ -38,8 +38,8 @@ export class DbTaskRepository implements TaskRepository {
                         reject(err)
                         return
                     }
-                    resolve()
                     this.emitTasksChanged()
+                    resolve()
                 })
             })
         })
@@ -52,8 +52,8 @@ export class DbTaskRepository implements TaskRepository {
                     reject(err)
                     return
                 }
-                resolve()
                 this.emitTasksChanged()
+                resolve()
             })
         })
     }
@@ -65,8 +65,8 @@ export class DbTaskRepository implements TaskRepository {
                     reject(err)
                     return
                 }
-                resolve()
                 this.emitTasksChanged()
+                resolve()
             })
         })
     }

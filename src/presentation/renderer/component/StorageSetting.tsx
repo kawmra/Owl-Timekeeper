@@ -1,7 +1,6 @@
 import React = require('react');
 import { useCases, dialog, relaunch } from "../remote";
 import { StoragePath } from '../../../domain/settings';
-import { Subscription } from '../../../Observable';
 
 interface State {
     editMode: boolean
