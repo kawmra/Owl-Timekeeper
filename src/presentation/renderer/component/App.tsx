@@ -1,8 +1,8 @@
 import React = require("react");
-import { TasksView } from "./TasksView";
-import { TimeRecordsView } from "./TimeRecordsView";
+import { TasksView } from "./task/TasksView";
+import { TimeRecordsView } from "./timeRecord/TimeRecordsView";
 import { Day } from "../../../domain/day";
-import { Settings } from "./Settings";
+import { Settings } from "./settings/Settings";
 
 enum Page {
     TASKS,

@@ -1,10 +1,10 @@
 import React = require("react");
-import { TimeRecord, compareTimeRecord } from "../../../domain/timeRecord";
-import { useCases, remoteDay, dialog } from "../remote";
-import { Day } from "../../../domain/day";
+import { TimeRecord, compareTimeRecord } from "../../../../domain/timeRecord";
+import { useCases, remoteDay, dialog } from "../../remote";
+import { Day } from "../../../../domain/day";
 import { TimeRecordView, TimeRecordViewModel } from "./TimeRecordView";
-import { compareTask } from "../../../domain/task";
-import { Subscription } from "../../../Observable";
+import { compareTask } from "../../../../domain/task";
+import { Subscription } from "../../../../Observable";
 
 interface Props {
     day: Day
