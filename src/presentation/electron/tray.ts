@@ -35,7 +35,7 @@ function mapToMenuItem(task: Task): Electron.MenuItemConstructorOptions {
     }
 }
 
-async function switchTask(task: Task) {
+async function switchTask(task: Task | null) {
     const oldActiveTask = await getActiveTask()
     if (oldActiveTask !== null && await existsTask(oldActiveTask.task.id)) {
         // No need to `addTimeRecord` if oldActiveTask already deleted,
@@ -45,12 +45,12 @@ async function switchTask(task: Task) {
         console.log(`Saved TimeRecord of ${oldActiveTask.task.name}`)
     }
     let newActiveTask = null
-    if (oldActiveTask !== null && oldActiveTask.task.id === task.id) {
+    if (task === null || (oldActiveTask !== null && oldActiveTask.task.id === task.id)) {
         await clearActiveTask()
         console.log('Cleared activeTask')
     } else {
         newActiveTask = await setActiveTask(task)
-        console.log(`Switch task to '${task ? `${task.name} (${task.id})` : 'none'}'`)
+        console.log(`Switch task to '${task.name} (${task.id})'`)
     }
     updateWithActiveTask(newActiveTask)
 }
@@ -61,10 +61,22 @@ export function createMenu(tasks: Array<Task>, activeTask: ActiveTask = null): M
         return {
             ...mapToMenuItem(task),
             checked,
-            click: () => switchTask(task)
+            click: () => { switchTask(task) }
         }
     })
     let template: Electron.MenuItemConstructorOptions[] = []
+    if (activeTask !== null) {
+        template = template.concat([
+            {
+                type: 'normal',
+                label: 'Stop Recording',
+                click: () => { switchTask(null) }
+            },
+            {
+                type: 'separator'
+            }
+        ])
+    }
     template.push({
         type: 'normal',
         label: 'Tasks',
