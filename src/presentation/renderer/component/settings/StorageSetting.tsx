@@ -63,40 +63,37 @@ export class StorageSetting extends React.Component<Props, State> {
 
     render() {
         return (
-            <div>
-                <h3 className="ui dividing header">Storage</h3>
-                <div className={"ui form" + (this.state.saving ? " loading" : "")}>
-                    <div className="field">
-                        <label>
-                            The path to the directory where save data to
+            <div className={"ui form" + (this.state.saving ? " loading" : "")}>
+                <div className="field">
+                    <label>
+                        The path to the directory where save data to
                         </label>
-                        <div className={"ui input" + (this.state.editMode ? " action" : " disabled")}>
-                            <input
-                                type="text"
-                                value={this.state.editorPath}
-                                onChange={e => this.setState({ editorPath: e.target.value })}
-                                placeholder="Path to your storage"
-                                readOnly={!this.state.editMode} />
-                            {
-                                this.state.editMode && <button className="ui button">Browse...</button>
-                            }
-                        </div>
+                    <div className={"ui input" + (this.state.editMode ? " action" : " disabled")}>
+                        <input
+                            type="text"
+                            value={this.state.editorPath}
+                            onChange={e => this.setState({ editorPath: e.target.value })}
+                            placeholder="Path to your storage"
+                            readOnly={!this.state.editMode} />
+                        {
+                            this.state.editMode && <button className="ui button">Browse...</button>
+                        }
                     </div>
-                    {
-                        this.state.editMode
-                            ? (
-                                <div className="field">
-                                    <button className="ui teal button" onClick={this.handleSaveClick.bind(this)}>Save</button>
-                                    <button className="ui button" onClick={this.handleCancelClick.bind(this)}>Cancel</button>
-                                </div>
-                            )
-                            : (
-                                <div className="field">
-                                    <button className="ui button" onClick={this.handleChangeClick.bind(this)}>Change the storage path</button>
-                                </div>
-                            )
-                    }
                 </div>
+                {
+                    this.state.editMode
+                        ? (
+                            <div className="field">
+                                <button className="ui teal button" onClick={this.handleSaveClick.bind(this)}>Save</button>
+                                <button className="ui button" onClick={this.handleCancelClick.bind(this)}>Cancel</button>
+                            </div>
+                        )
+                        : (
+                            <div className="field">
+                                <button className="ui button" onClick={this.handleChangeClick.bind(this)}>Change the storage path</button>
+                            </div>
+                        )
+                }
             </div>
         )
     }

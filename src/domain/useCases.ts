@@ -7,7 +7,7 @@ import { DbTaskRepository } from "../data/task/DbTaskRepository";
 import { DbTimeRecordRepository } from "../data/timeRecord/DbTimeRecordRepository";
 import { FileActiveTaskRepository } from "../data/task/FileActiveTaskRepository";
 import { Subscription } from "../Observable";
-import { StoragePath, AppSettings } from "./settings";
+import { StoragePath, AppSettings, MenuBarRestriction } from "./settings";
 
 // TODO: Those instances should be injected.
 const settings: AppSettings = new AppSettingsImpl()
@@ -118,4 +118,24 @@ export async function setStoragePath(absolutePath: string, needMigration: boolea
 
 export async function getStoragePath(): Promise<StoragePath> {
     return settings.getStoragePathSync()
+}
+
+export async function setMenuBarRestricted(restricted: boolean) {
+    const current = await settings.getMenuBarRestriction()
+    return settings.setMenuBarRestriction({ ...current, restricted })
+}
+
+export async function setMenuBarMaxCharacters(maxCharacters: number) {
+    const current = await settings.getMenuBarRestriction()
+    return settings.setMenuBarRestriction({ ...current, maxCharacters })
+}
+
+export async function getMenuBarRestriction(): Promise<MenuBarRestriction> {
+    return settings.getMenuBarRestriction()
+}
+
+export function observeMenuBarRestriction(listener: (restriction: MenuBarRestriction) => void): Subscription {
+    const observable = settings.observeMenuBarRestriction()
+    observable.on(listener)
+    return new Subscription(observable, listener)
 }
