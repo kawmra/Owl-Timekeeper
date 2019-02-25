@@ -1,4 +1,4 @@
-import { AppSettingsImpl } from './../data/settings/FileSettingsRepository';
+import { AppSettingsImpl } from '../data/settings/AppSettingsImpl';
 import { Task, ActiveTask, TaskRepository, ActiveTaskRepository } from "./task";
 import { TimeRecord, TimeRecordRepository } from "./timeRecord";
 import { Day } from "./day";

@@ -18,7 +18,7 @@ const DEFAULT_SETTINGS_JSON: SettingsJson = {
     }
 }
 
-const EVENT_ON_STORAGE_PATH_CHANGED = 'onStoragePathChanged'
+const EVENT_ON_MENU_BAR_RESTRICTION_CHANGED = 'onMenuBarRestrictionChanged'
 
 interface SettingsJson {
     storagePath: StoragePath
@@ -48,7 +48,6 @@ export class AppSettingsImpl implements AppSettings {
             pendingAbsolutePath: absolutePath,
         }
         await this.saveJson({ ...settings, storagePath: pending })
-        this.emitStoragePathChanged(pending)
         // TODO: Implements migration.
         // If the new absolute path already has db files,
         // it probably should confirm to the user to overwrite those files or not.
@@ -57,19 +56,21 @@ export class AppSettingsImpl implements AppSettings {
             pendingAbsolutePath: null,
         }
         await this.saveJson({ ...settings, storagePath: completed })
-        this.emitStoragePathChanged(completed)
     }
 
-    getMenuBarRestriction(): Promise<MenuBarRestriction> {
-        throw new Error("Method not implemented.");
+    async getMenuBarRestriction(): Promise<MenuBarRestriction> {
+        const settings = await this.loadJsonOrThrow().catch(() => DEFAULT_SETTINGS_JSON)
+        return settings.menuBarRestriction
     }
 
     observeMenuBarRestriction(): Observable<MenuBarRestriction> {
-        throw new Error("Method not implemented.");
+        return new MenuBarRestrictionObservable(this.emitter, this.getMenuBarRestriction())
     }
 
-    setMenuBarRestriction(restriction: MenuBarRestriction): Promise<void> {
-        throw new Error("Method not implemented.");
+    async setMenuBarRestriction(restriction: MenuBarRestriction): Promise<void> {
+        const settings = await this.loadJsonOrThrow().catch(() => DEFAULT_SETTINGS_JSON)
+        await this.saveJson({ ...settings, menuBarRestriction: restriction })
+        this.emitMenuBarRestrictionChanged(restriction)
     }
 
     private async loadJsonOrThrow(): Promise<SettingsJson> {
@@ -80,8 +81,8 @@ export class AppSettingsImpl implements AppSettings {
         return fs.writeFile(this.settingsFilePath, JSON.stringify(settings))
     }
 
-    private emitStoragePathChanged(storagePath: StoragePath) {
-        this.emitter.emit(EVENT_ON_STORAGE_PATH_CHANGED, storagePath)
+    private emitMenuBarRestrictionChanged(restriction: MenuBarRestriction) {
+        this.emitter.emit(EVENT_ON_MENU_BAR_RESTRICTION_CHANGED, restriction)
     }
 
     private getSettingsSync(): SettingsJson {
@@ -111,8 +112,19 @@ function convertToSettings(json: any): SettingsJson {
             pendingAbsolutePath: json.storagePath.pendingAbsolutePath
         },
         menuBarRestriction: {
-            restricted: false,
-            maxCharacters: 2
+            restricted: json.menuBarRestriction.restricted,
+            maxCharacters: json.menuBarRestriction.maxCharacters
         }
+    }
+}
+
+class MenuBarRestrictionObservable extends Observable<MenuBarRestriction> {
+
+    protected subscribe(source: EventEmitter, listener: (payload: MenuBarRestriction) => void): void {
+        source.on(EVENT_ON_MENU_BAR_RESTRICTION_CHANGED, listener)
+    }
+
+    protected unsubscribe(source: EventEmitter, listener: (payload: MenuBarRestriction) => void): void {
+        source.off(EVENT_ON_MENU_BAR_RESTRICTION_CHANGED, listener)
     }
 }
