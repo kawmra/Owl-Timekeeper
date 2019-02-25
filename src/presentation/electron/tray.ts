@@ -4,7 +4,7 @@ import * as path from "path"
 import { Task, ActiveTask, compareTask } from "../../domain/task"
 import { setActiveTask, getActiveTask, addTimeRecord, clearActiveTask, getTasks, getTimeRecords, existsTask, observeTasks, observeActiveTask, observeMenuBarRestriction } from "../../domain/useCases";
 import { TimeRecord } from "../../domain/timeRecord";
-import { Day } from "../../domain/day";
+import { focusMainWindow } from './main';
 
 let tray: Tray = null
 let restriction: MenuBarRestriction | undefined
@@ -85,7 +85,7 @@ export function createMenu(tasks: Array<Task>, activeTask: ActiveTask = null): M
     template.push(...taskItems)
     template = template.concat([
         { type: 'separator' },
-        { label: 'Show Records', click: () => { getTimeRecords(Day.today()).then(records => showTimeRecords(records)) } },
+        { label: 'Open Main Window…', click: () => { focusMainWindow() } },
         { type: 'separator' },
         { label: 'Quit', role: 'quit' }
     ])
