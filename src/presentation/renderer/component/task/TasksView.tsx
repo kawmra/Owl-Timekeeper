@@ -1,9 +1,9 @@
 import React = require('react');
-import { Task, compareTask } from '../../../domain/task';
-import { useCases, dialog } from '../remote';
-import { ERROR_TASK_ALREADY_EXISTS } from '../../../data/task/DbTaskRepository';
+import { Task, compareTask } from '../../../../domain/task';
+import { useCases, dialog } from '../../remote';
+import { ERROR_TASK_ALREADY_EXISTS } from '../../../../data/task/DbTaskRepository';
 import { TaskView } from './TaskView';
-import { Subscription } from '../../../Observable';
+import { Subscription } from '../../../../Observable';
 
 interface Props { }
 

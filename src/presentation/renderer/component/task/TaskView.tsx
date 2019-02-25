@@ -1,5 +1,5 @@
 import React = require('react');
-import { Task } from '../../../domain/task';
+import { Task } from '../../../../domain/task';
 
 interface Props {
     task: Task

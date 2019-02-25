@@ -2,27 +2,30 @@ import { TimeRecordRepository, TimeRecord } from "../../domain/timeRecord";
 import { Day } from "../../domain/day";
 import Nedb = require("nedb");
 import * as path from "path"
-import { app } from "electron";
 import { Observable } from "../../Observable";
 import { EventEmitter } from 'events';
 
+const FILE_NAME = 'timeRecords.db'
 // Parameters: day: Day, records_of_the_day: TimeRecord[]
 const EVENT_ON_TIME_RECORD_CHANGED = 'onTimeRecordChanged'
 
 export class DbTimeRecordRepository implements TimeRecordRepository {
 
-    private db = new Nedb({
-        filename: path.join(app.getPath('userData'), 'timeRecords.db'),
-        autoload: true
-    })
-
+    private db: Nedb
     private emitter = new EventEmitter()
+
+    constructor(dirPath: string) {
+        this.db = new Nedb({
+            filename: path.join(dirPath, FILE_NAME),
+            autoload: true
+        })
+    }
 
     addTimeRecord(timeRecord: TimeRecord): Promise<void> {
         this.db.insert(timeRecord)
         return new Promise(resolve => {
-            resolve()
             this.emitTimeRecordChanged(Day.fromMillis(timeRecord.startTime))
+            resolve()
         })
     }
 
@@ -33,8 +36,8 @@ export class DbTimeRecordRepository implements TimeRecordRepository {
                     reject(err)
                     return
                 }
-                resolve()
                 this.emitTimeRecordChanged(Day.fromMillis(timeRecord.startTime))
+                resolve()
             })
         })
     }
@@ -46,8 +49,8 @@ export class DbTimeRecordRepository implements TimeRecordRepository {
                     reject(err)
                     return
                 }
-                resolve()
                 this.emitTimeRecordChangedByUpdateTaskName(taskId)
+                resolve()
             })
         })
     }
@@ -95,8 +98,8 @@ export class DbTimeRecordRepository implements TimeRecordRepository {
                         reject(err)
                         return
                     }
-                    resolve()
                     this.emitTimeRecordChanged(Day.fromMillis(record.startTime))
+                    resolve()
                 })
             })
         })

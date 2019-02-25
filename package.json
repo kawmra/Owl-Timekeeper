@@ -17,6 +17,8 @@
     "clean": "rm -rf dist compiled-src"
   },
   "dependencies": {
+    "@types/fs-extra": "^5.0.5",
+    "fs-extra": "^7.0.1",
     "moment": "^2.23.0",
     "nedb": "^1.8.0",
     "react": "^16.7.0",

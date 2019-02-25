@@ -1,7 +1,8 @@
 import React = require("react");
-import { TasksView } from "./TasksView";
-import { TimeRecordsView } from "./TimeRecordsView";
+import { TasksView } from "./task/TasksView";
+import { TimeRecordsView } from "./timeRecord/TimeRecordsView";
 import { Day } from "../../../domain/day";
+import { Settings } from "./settings/Settings";
 
 enum Page {
     TASKS,
@@ -60,9 +61,7 @@ export class App extends React.Component<Props, State> {
                         <TimeRecordsView day={Day.today()} />
                     </div>
                     <div style={visibility.call(this, Page.SETTINGS)}>
-                        <div className="ui basic center aligned segment">
-                            Nothing to show for now.
-                        </div>
+                        <Settings />
                     </div>
                 </div>
             </div>

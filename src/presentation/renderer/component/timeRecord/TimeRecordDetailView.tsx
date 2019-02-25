@@ -1,6 +1,6 @@
 import React = require("react");
-import { TimeRecord } from "../../../domain/timeRecord";
-import { Day } from "../../../domain/day";
+import { TimeRecord } from "../../../../domain/timeRecord";
+import { Day } from "../../../../domain/day";
 
 interface EditorProps {
     time: number

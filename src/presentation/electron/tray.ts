@@ -1,11 +1,13 @@
+import { MenuBarRestriction } from './../../domain/settings';
 import { Tray, nativeImage, Menu, dialog } from "electron"
 import * as path from "path"
 import { Task, ActiveTask, compareTask } from "../../domain/task"
-import { setActiveTask, getActiveTask, addTimeRecord, clearActiveTask, getTasks, getTimeRecords, existsTask, observeTasks, observeActiveTask } from "../../domain/useCases";
+import { setActiveTask, getActiveTask, addTimeRecord, clearActiveTask, getTasks, getTimeRecords, existsTask, observeTasks, observeActiveTask, observeMenuBarRestriction } from "../../domain/useCases";
 import { TimeRecord } from "../../domain/timeRecord";
 import { Day } from "../../domain/day";
 
 let tray: Tray = null
+let restriction: MenuBarRestriction | undefined
 
 export function createTray() {
     if (tray != null) {
@@ -19,6 +21,10 @@ export function createTray() {
     })
     observeActiveTask(activeTask => {
         updateWithActiveTask(activeTask)
+    })
+    observeMenuBarRestriction(_restriction => {
+        restriction = _restriction
+        updateWith()
     })
 }
 
@@ -82,7 +88,7 @@ async function updateWithActiveTask(_activeTask: ActiveTask | null) {
     updateWith(undefined, _activeTask)
 }
 
-async function updateWith(_tasks: Task[], _activeTask: ActiveTask | null) {
+async function updateWith(_tasks?: Task[], _activeTask?: ActiveTask | null) {
     if (tray === null) {
         return
     }
@@ -91,9 +97,20 @@ async function updateWith(_tasks: Task[], _activeTask: ActiveTask | null) {
     const activeTask = _activeTask || await getActiveTask()
     const menu = createMenu(tasks, activeTask)
     const activeTaskExists = activeTask && await existsTask(activeTask.task.id)
-    tray.setTitle(activeTaskExists ? activeTask.task.name : '')
-    tray.setToolTip(activeTaskExists ? activeTask.task.name : 'Owl Time Keeper')
+    const title = activeTaskExists
+        ? restriction && restriction.restricted
+            ? restrictedTitle(activeTask.task.name, restriction.maxCharacters)
+            : activeTask.task.name
+        : ''
+    tray.setTitle(title)
+    tray.setToolTip(activeTaskExists ? activeTask.task.name : 'Owl Timekeeper')
     tray.setContextMenu(menu)
+}
+
+function restrictedTitle(title: string, maxCharacters: number) {
+    if (maxCharacters <= 0) { return '' }
+    if (maxCharacters >= title.length) { return title }
+    return title.substring(0, maxCharacters) + '…'
 }
 
 function showTimeRecords(records: TimeRecord[]) {

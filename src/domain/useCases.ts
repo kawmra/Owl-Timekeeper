@@ -1,15 +1,20 @@
-import { Task, ActiveTask } from "./task";
-import { TimeRecord } from "./timeRecord";
+import { AppSettingsImpl } from '../data/settings/AppSettingsImpl';
+import { Task, ActiveTask, TaskRepository, ActiveTaskRepository } from "./task";
+import { TimeRecord, TimeRecordRepository } from "./timeRecord";
 import { Day } from "./day";
 import { v4 } from "uuid";
 import { DbTaskRepository } from "../data/task/DbTaskRepository";
 import { DbTimeRecordRepository } from "../data/timeRecord/DbTimeRecordRepository";
 import { FileActiveTaskRepository } from "../data/task/FileActiveTaskRepository";
 import { Subscription } from "../Observable";
+import { StoragePath, AppSettings, MenuBarRestriction } from "./settings";
 
-const taskRepository = new DbTaskRepository()
-const activeTaskRepository = new FileActiveTaskRepository()
-const timeRecordRepository = new DbTimeRecordRepository()
+// TODO: Those instances should be injected.
+const settings: AppSettings = new AppSettingsImpl()
+const storagePath = settings.getStoragePathSync()
+let taskRepository: TaskRepository = new DbTaskRepository(storagePath.absolutePath)
+let activeTaskRepository: ActiveTaskRepository = new FileActiveTaskRepository(storagePath.absolutePath)
+let timeRecordRepository: TimeRecordRepository = new DbTimeRecordRepository(storagePath.absolutePath)
 
 export async function createTask(name: string): Promise<Task> {
     const task = { id: v4(), name }
@@ -104,4 +109,33 @@ export async function updateTimeRecord(timeRecord: TimeRecord): Promise<void> {
 
 export async function deleteTimeRecord(id: string): Promise<void> {
     return timeRecordRepository.delete(id)
+}
+
+// currentry `needMigration` is not supported, it will be ignored
+export async function setStoragePath(absolutePath: string, needMigration: boolean): Promise<void> {
+    return settings.setStoragePath(absolutePath, needMigration)
+}
+
+export async function getStoragePath(): Promise<StoragePath> {
+    return settings.getStoragePathSync()
+}
+
+export async function setMenuBarRestricted(restricted: boolean) {
+    const current = await settings.getMenuBarRestriction()
+    return settings.setMenuBarRestriction({ ...current, restricted })
+}
+
+export async function setMenuBarMaxCharacters(maxCharacters: number) {
+    const current = await settings.getMenuBarRestriction()
+    return settings.setMenuBarRestriction({ ...current, maxCharacters })
+}
+
+export async function getMenuBarRestriction(): Promise<MenuBarRestriction> {
+    return settings.getMenuBarRestriction()
+}
+
+export function observeMenuBarRestriction(listener: (restriction: MenuBarRestriction) => void): Subscription {
+    const observable = settings.observeMenuBarRestriction()
+    observable.on(listener)
+    return new Subscription(observable, listener)
 }

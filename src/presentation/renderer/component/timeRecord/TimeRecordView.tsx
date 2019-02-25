@@ -1,8 +1,8 @@
 import React = require("react");
 import { TimeRecordDetailView } from "./TimeRecordDetailView";
-import { Task } from "../../../domain/task";
-import { TimeRecord } from "../../../domain/timeRecord";
-import { Day } from "../../../domain/day";
+import { Task } from "../../../../domain/task";
+import { TimeRecord } from "../../../../domain/timeRecord";
+import { Day } from "../../../../domain/day";
 
 interface Props {
     viewModel: TimeRecordViewModel
