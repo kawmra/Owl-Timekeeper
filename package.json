@@ -1,5 +1,6 @@
 {
   "name": "owl-timekeeper",
+  "productName": "Owl Timekeeper",
   "version": "0.0.1",
   "description": "Owl Timekeeper is a simple timekeeper application.",
   "author": {

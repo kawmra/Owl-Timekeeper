@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron"
+import { app, BrowserWindow, Menu, MenuItemConstructorOptions } from "electron"
 import * as path from "path"
 import { createTray } from "./tray"
 
@@ -9,7 +9,6 @@ function createWindow() {
     mainWindow = new BrowserWindow({
         height: 400,
         width: 560,
-        title: "Owl Timekeeper",
     })
 
     // and load the index.html of the app.
@@ -26,10 +25,35 @@ function createWindow() {
     createTray()
 }
 
+function createApplicationMenu() {
+    const template: MenuItemConstructorOptions[] = [
+        {
+            label: app.getName(),
+            submenu: [
+                { role: 'about' },
+                { type: 'separator' },
+                { role: 'hide' },
+                { role: 'hideOthers' },
+                { role: 'unhide' },
+                { type: 'separator' },
+                { role: 'quit' }
+            ]
+        },
+        { role: 'editMenu' },
+        { role: 'windowMenu' },
+    ]
+    Menu.setApplicationMenu(Menu.buildFromTemplate(template))
+}
+
+function ready() {
+    createWindow()
+    createApplicationMenu()
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on("ready", createWindow)
+app.on("ready", ready)
 
 // Quit when all windows are closed.
 app.on("window-all-closed", () => {
