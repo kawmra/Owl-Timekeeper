@@ -81,15 +81,23 @@ export class TasksView extends React.Component<Props, State> {
         </div>
         <div className="ui divided items">
           {
-            this.state.tasks.map((task: Task) => {
-              return (
-                <TaskView
-                  key={task.id}
-                  task={task}
-                  onEdit={this.handleEditTask.bind(this)}
-                  onDelete={this.handleDeleteTask.bind(this)} />
+            this.state.tasks.length > 0
+              ? this.state.tasks.map((task: Task) => {
+                return (
+                  <TaskView
+                    key={task.id}
+                    task={task}
+                    onEdit={this.handleEditTask.bind(this)}
+                    onDelete={this.handleDeleteTask.bind(this)} />
+                )
+              })
+              : (
+                <div className="item">
+                  <div className="ui center aligned basic segment">
+                    Task list is empty.
+                  </div>
+                </div>
               )
-            })
           }
         </div>
       </div>

@@ -57,31 +57,29 @@ export class TaskView extends React.Component<Props, State> {
 
     renderEditor() {
         return (
-            <div className="content">
-                <div className="ui small fluid action input">
-                    <input
-                        type="text"
-                        placeholder={this.props.task.name}
-                        onChange={(e) => this.setState({ editingTaskName: e.target.value })}
-                        onKeyPress={this.handleOnKeyPress.bind(this)}
-                        onKeyDown={this.handleOnKeyDown.bind(this)}
-                        value={this.state.editingTaskName}
-                        autoFocus={true}
-                    />
-                    <button className="ui teal button" onClick={this.handleOnEditClick.bind(this)}>
-                        Save
-                    </button>
-                    <button className="ui icon button" onClick={this.handleOnCancelClick.bind(this)}>
-                        <i className="close icon"></i>
-                    </button>
-                </div>
+            <div className="ui small fluid action input">
+                <input
+                    type="text"
+                    placeholder={this.props.task.name}
+                    onChange={(e) => this.setState({ editingTaskName: e.target.value })}
+                    onKeyPress={this.handleOnKeyPress.bind(this)}
+                    onKeyDown={this.handleOnKeyDown.bind(this)}
+                    value={this.state.editingTaskName}
+                    autoFocus={true}
+                />
+                <button className="ui teal button" onClick={this.handleOnEditClick.bind(this)}>
+                    Save
+                </button>
+                <button className="ui icon button" onClick={this.handleOnCancelClick.bind(this)}>
+                    <i className="close icon"></i>
+                </button>
             </div>
         )
     }
 
     renderNormal() {
         return (
-            <div className="aligned content">
+            <div>
                 {this.props.task.name}
                 <div className="right floated item">
                     <i className="edit link icon" onClick={() => this.setState({ editMode: true })} />
