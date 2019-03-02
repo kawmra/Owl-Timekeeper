@@ -42,6 +42,14 @@ function createApplicationMenu() {
         { role: 'editMenu' },
         { role: 'windowMenu' },
     ]
+    if (!app.isPackaged) {
+        template.push({
+            label: 'Debug',
+            submenu: [
+                { role: 'toggleDevTools' }
+            ]
+        })
+    }
     Menu.setApplicationMenu(Menu.buildFromTemplate(template))
 }
 
