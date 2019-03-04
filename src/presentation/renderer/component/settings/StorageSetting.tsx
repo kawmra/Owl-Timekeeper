@@ -1,5 +1,5 @@
 import React = require('react');
-import { useCases, dialog, relaunch } from "../../remote";
+import { useCases, dialog, relaunch, getCurrentWindow } from "../../remote";
 import { StoragePath } from '../../../../domain/settings';
 
 interface State {
@@ -34,6 +34,15 @@ export class StorageSetting extends React.Component<Props, State> {
     handleChangeClick() {
         this.setState({
             editMode: true
+        })
+    }
+
+    handleBrowseClick() {
+        dialog.showOpenDialog(getCurrentWindow(), {
+            defaultPath: this.state.editorPath,
+            properties: ['openDirectory']
+        }, filePaths => {
+            this.setState({ editorPath: filePaths[0] })
         })
     }
 
@@ -76,7 +85,7 @@ export class StorageSetting extends React.Component<Props, State> {
                             placeholder="Path to your storage"
                             readOnly={!this.state.editMode} />
                         {
-                            this.state.editMode && <button className="ui button">Browse...</button>
+                            this.state.editMode && <button className="ui button" onClick={this.handleBrowseClick.bind(this)}>Browse...</button>
                         }
                     </div>
                 </div>
