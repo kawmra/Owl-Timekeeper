@@ -13,7 +13,7 @@ export function createTray() {
     if (tray != null) {
         return
     }
-    const icon = nativeImage.createFromPath(path.join(__dirname, "../../../res/starTemplate.png"))
+    const icon = nativeImage.createFromPath(path.join(__dirname, "../../../res/trayTemplate.png"))
     tray = new Tray(icon)
     tray.setToolTip('This is my application.')
     observeTasks(tasks => {
