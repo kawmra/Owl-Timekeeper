@@ -2,3 +2,4 @@
 node_modules/
 compiled-src/
 dist/
+yarn-error.log
