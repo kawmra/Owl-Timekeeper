@@ -10,11 +10,11 @@
   "license": "MIT",
   "main": "compiled-src/presentation/electron/main.js",
   "scripts": {
-    "build": "yarn & tsc",
-    "build-prod": "yarn & tsc --sourceMap false",
-    "start": "yarn build & electron compiled-src/presentation/electron/main.js",
+    "build": "yarn && tsc",
+    "build-prod": "yarn && tsc --sourceMap false",
+    "start": "yarn build && electron compiled-src/presentation/electron/main.js",
     "pack": "electron-builder --dir",
-    "dist": "clean & build-prod & electron-builder",
+    "dist": "yarn clean && yarn build-prod && electron-builder",
     "clean": "rm -rf dist compiled-src"
   },
   "dependencies": {
