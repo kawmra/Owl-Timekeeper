@@ -1,7 +1,7 @@
 import { app, BrowserWindow, Menu, MenuItemConstructorOptions } from "electron"
 import * as path from "path"
 import { createTray } from "./tray"
-import { observeDockIconVisibility, isDockIconVisible } from "../../domain/useCases";
+import { isDockIconVisible } from "../../domain/useCases";
 
 let mainWindow: Electron.BrowserWindow
 let currentDockVisibility: boolean = undefined
