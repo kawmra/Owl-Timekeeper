@@ -10,6 +10,8 @@ interface State {
     maxCharacters: number | ''
 }
 
+const menuBarRestrictedCheckboxHtmlId = 'menuBarRestrictedCheckbox'
+
 export class MenuBarRestrictionSetting extends React.Component<Props, State> {
 
     constructor(props: Props) {
@@ -30,13 +32,15 @@ export class MenuBarRestrictionSetting extends React.Component<Props, State> {
         })
     }
 
-    handleMenuBarRestrictedChanged() {
-        const restricted = !this.state.restricted
-        this.setState({ restricted })
+    handleOnMenuBarRestrictedChanged(e: React.ChangeEvent<HTMLInputElement>) {
+        const restricted = e.target.checked
         useCases.setMenuBarRestricted(restricted)
+            .then(() => {
+                this.setState({ restricted })
+            })
     }
 
-    handleMaxCharacterChanged(e: React.ChangeEvent<HTMLInputElement>) {
+    handleOnMaxCharacterChanged(e: React.ChangeEvent<HTMLInputElement>) {
         const maxCharacters = e.target.value !== '' ? Number(e.target.value) : ''
         this.setState({ maxCharacters })
     }
@@ -50,14 +54,16 @@ export class MenuBarRestrictionSetting extends React.Component<Props, State> {
         return (
             <div className="ui form">
                 <div className="field">
-                    <div className="ui checkbox" onClick={this.handleMenuBarRestrictedChanged.bind(this)}>
+                    <div className="ui checkbox">
                         <input
+                            id={menuBarRestrictedCheckboxHtmlId}
                             type="checkbox"
-                            name="foo"
                             checked={this.state.restricted}
-                            onChange={e => this.setState({ restricted: e.target.checked })}
+                            onChange={this.handleOnMenuBarRestrictedChanged.bind(this)}
                         />
-                        <label style={{ cursor: 'pointer' }}>
+                        <label
+                            htmlFor={menuBarRestrictedCheckboxHtmlId}
+                            style={{ cursor: 'pointer' }}>
                             Restrict the number of characters to display in the menu bar
                             </label>
                     </div>
@@ -72,7 +78,7 @@ export class MenuBarRestrictionSetting extends React.Component<Props, State> {
                         value={this.state.maxCharacters}
                         onBlur={e => this.handleMaxCharacterChangeStabled.call(this, e.target.value)}
                         onKeyPress={e => { if (e.key === 'Enter') { this.handleMaxCharacterChangeStabled.call(this, e.currentTarget.value) } }}
-                        onChange={this.handleMaxCharacterChanged.bind(this)}
+                        onChange={this.handleOnMaxCharacterChanged.bind(this)}
                     />
                 </div>
             </div>
