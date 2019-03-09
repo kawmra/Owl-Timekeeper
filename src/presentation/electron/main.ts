@@ -3,7 +3,8 @@ import * as path from "path"
 import { createTray } from "./tray"
 import { observeDockIconVisibility, isDockIconVisible } from "../../domain/useCases";
 
-let mainWindow: Electron.BrowserWindow;
+let mainWindow: Electron.BrowserWindow
+let currentDockVisibility: boolean = undefined
 
 function createWindow() {
     // Create the browser window.
@@ -60,20 +61,15 @@ function ready() {
     createApplicationMenu()
 }
 
-async function updateDockIconVisibility(settingDockIconVisibility?: boolean) {
-    const shouldShowDockIcon = settingDockIconVisibility !== undefined
-        ? settingDockIconVisibility
-        : await isDockIconVisible()
-    if (mainWindow !== null || shouldShowDockIcon) {
-        app.dock.show()
-    } else {
-        app.dock.hide()
+async function updateDockIconVisibility() {
+    const shouldDockIconShow = mainWindow !== null || await isDockIconVisible()
+    if (currentDockVisibility === undefined
+        || shouldDockIconShow !== currentDockVisibility) {
+        shouldDockIconShow
+            ? app.dock.show()
+            : app.dock.hide()
     }
 }
-
-observeDockIconVisibility(visible => {
-    updateDockIconVisibility(visible)
-})
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
