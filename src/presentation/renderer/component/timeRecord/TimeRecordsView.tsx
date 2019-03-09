@@ -1,10 +1,11 @@
 import React = require("react");
 import { TimeRecord, compareTimeRecord } from "../../../../domain/timeRecord";
-import { useCases, remoteDay, dialog } from "../../remote";
+import { useCases, remoteDay, dialog, getCurrentWindow } from "../../remote";
 import { Day } from "../../../../domain/day";
 import { TimeRecordView, TimeRecordViewModel } from "./TimeRecordView";
 import { compareTask } from "../../../../domain/task";
 import { Subscription } from "../../../../Observable";
+import { BrowserWindow } from "electron";
 
 interface Props {
     day: Day
@@ -18,6 +19,7 @@ interface State {
 export class TimeRecordsView extends React.Component<Props, State> {
 
     private timeRecordsSubscription: Subscription
+    private targetWindow: BrowserWindow
 
     constructor(props: Props) {
         super(props)
@@ -25,14 +27,24 @@ export class TimeRecordsView extends React.Component<Props, State> {
             timeRecordViewModels: [],
             targetDay: this.props.day
         }
+        this.handleOnWindowFocused = this.handleOnWindowFocused.bind(this)
     }
 
     componentDidMount() {
         this.observeTimeRecords(this.props.day)
+        this.targetWindow = getCurrentWindow()
+        this.targetWindow.on('focus', this.handleOnWindowFocused)
     }
 
     componentWillUnmount() {
         this.timeRecordsSubscription && this.timeRecordsSubscription.unsubscribe()
+        this.targetWindow.removeListener('focus', this.handleOnWindowFocused)
+        this.targetWindow = undefined
+    }
+
+    handleOnWindowFocused() {
+        console.log('browser window focused!')
+        this.forceUpdate()
     }
 
     observeTimeRecords(day: Day) {
@@ -117,6 +129,7 @@ export class TimeRecordsView extends React.Component<Props, State> {
                         id="backToTodayLabel"
                         style={{ display: this.state.targetDay.equals(Day.today()) ? 'none' : 'block' }}
                         onClick={e => { this.setState({ targetDay: Day.today() }) }}>
+                        <i className="undo alternate icon" />
                         Back to Today
                     </a>
                     <a className="left item" onClick={this.handlePrevClick.bind(this)}>
