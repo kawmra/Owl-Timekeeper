@@ -102,6 +102,23 @@ export class TimeRecordsView extends React.Component<Props, State> {
         return (
             <div>
                 <div className="ui secondary three item menu">
+                    <style>
+                        {/* React inline style doesn't support !important. */}
+                        {`
+                            #backToTodayLabel {
+                                top: 0px;
+                                left: unset;
+                                margin: 0px !important;
+                            }
+                        `}
+                    </style>
+                    <a
+                        className="floating ui circular label"
+                        id="backToTodayLabel"
+                        style={{ display: this.state.targetDay.equals(Day.today()) ? 'none' : 'block' }}
+                        onClick={e => { this.setState({ targetDay: Day.today() }) }}>
+                        Back to Today
+                    </a>
                     <a className="left item" onClick={this.handlePrevClick.bind(this)}>
                         <i className="angle left icon"></i>
                     </a>
