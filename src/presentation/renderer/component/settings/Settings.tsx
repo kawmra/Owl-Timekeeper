@@ -1,6 +1,7 @@
 import React = require('react');
 import { StorageSetting } from './StorageSetting';
 import { MenuBarRestrictionSetting } from './MenuBarRestrictionSetting';
+import { DockIconSetting } from './DockIconSetting';
 
 interface State {
 }
@@ -22,6 +23,8 @@ export class Settings extends React.Component<Props, State> {
                 <StorageSetting />
                 <h3 className="ui dividing header">Menu bar</h3>
                 <MenuBarRestrictionSetting />
+                <h3 className="ui dividing header">Dock Icon</h3>
+                <DockIconSetting />
             </div>
         )
     }

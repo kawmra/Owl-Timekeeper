@@ -15,14 +15,17 @@ const DEFAULT_SETTINGS_JSON: SettingsJson = {
     menuBarRestriction: {
         restricted: false,
         maxCharacters: 10
-    }
+    },
+    isDockIconVisible: false
 }
 
 const EVENT_ON_MENU_BAR_RESTRICTION_CHANGED = 'onMenuBarRestrictionChanged'
+const EVENT_ON_DOCK_ICON_VISIBILITY_CHANGED = 'onDockIconVisibilityChanged'
 
 interface SettingsJson {
     storagePath: StoragePath
     menuBarRestriction: MenuBarRestriction
+    isDockIconVisible: boolean
 }
 
 export class AppSettingsImpl implements AppSettings {
@@ -73,6 +76,21 @@ export class AppSettingsImpl implements AppSettings {
         this.emitMenuBarRestrictionChanged(restriction)
     }
 
+    async isDockIconVisible(): Promise<boolean> {
+        const settings = await this.loadJsonOrThrow().catch(() => DEFAULT_SETTINGS_JSON)
+        return settings.isDockIconVisible
+    }
+
+    observeDockIconVisibility(): Observable<boolean> {
+        return new DockIconVisibilityObservable(this.emitter, this.isDockIconVisible())
+    }
+
+    async setDockIconVisibility(visible: boolean): Promise<void> {
+        const settings = await this.loadJsonOrThrow().catch(() => DEFAULT_SETTINGS_JSON)
+        await this.saveJson({ ...settings, isDockIconVisible: visible })
+        this.emitDockIconVisibilityChanged(visible)
+    }
+
     private async loadJsonOrThrow(): Promise<SettingsJson> {
         return convertToSettings(await fs.readJson(this.settingsFilePath))
     }
@@ -83,6 +101,10 @@ export class AppSettingsImpl implements AppSettings {
 
     private emitMenuBarRestrictionChanged(restriction: MenuBarRestriction) {
         this.emitter.emit(EVENT_ON_MENU_BAR_RESTRICTION_CHANGED, restriction)
+    }
+
+    private emitDockIconVisibilityChanged(visible: boolean) {
+        this.emitter.emit(EVENT_ON_DOCK_ICON_VISIBILITY_CHANGED, visible)
     }
 
     private getSettingsSync(): SettingsJson {
@@ -106,6 +128,8 @@ function convertToSettings(json: any): SettingsJson {
         throw new Error("The key `menuBarRestriction.restricted` is missing.")
     if (json.menuBarRestriction.maxCharacters === undefined)
         throw new Error("The key `menuBarRestriction.maxCharacters` is missing.")
+    if (json.isDockIconVisible === undefined)
+        throw new Error("The key `isDockIconVisible` is missing.")
     return {
         storagePath: {
             absolutePath: json.storagePath.absolutePath,
@@ -114,7 +138,8 @@ function convertToSettings(json: any): SettingsJson {
         menuBarRestriction: {
             restricted: json.menuBarRestriction.restricted,
             maxCharacters: json.menuBarRestriction.maxCharacters
-        }
+        },
+        isDockIconVisible: json.isDockIconVisible
     }
 }
 
@@ -126,5 +151,16 @@ class MenuBarRestrictionObservable extends Observable<MenuBarRestriction> {
 
     protected unsubscribe(source: EventEmitter, listener: (payload: MenuBarRestriction) => void): void {
         source.off(EVENT_ON_MENU_BAR_RESTRICTION_CHANGED, listener)
+    }
+}
+
+class DockIconVisibilityObservable extends Observable<boolean> {
+
+    protected subscribe(source: EventEmitter, listener: (payload: boolean) => void): void {
+        source.on(EVENT_ON_DOCK_ICON_VISIBILITY_CHANGED, listener)
+    }
+
+    protected unsubscribe(source: EventEmitter, listener: (payload: boolean) => void): void {
+        source.off(EVENT_ON_DOCK_ICON_VISIBILITY_CHANGED, listener)
     }
 }

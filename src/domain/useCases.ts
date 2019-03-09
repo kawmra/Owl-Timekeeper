@@ -139,3 +139,17 @@ export function observeMenuBarRestriction(listener: (restriction: MenuBarRestric
     observable.on(listener)
     return new Subscription(observable, listener)
 }
+
+export function isDockIconVisible(): Promise<boolean> {
+    return settings.isDockIconVisible()
+}
+
+export function observeDockIconVisibility(listener: (visible: boolean) => void): Subscription {
+    const observable = settings.observeDockIconVisibility()
+    observable.on(listener)
+    return new Subscription(observable, listener)
+}
+
+export async function setDockIconVisibility(visible: boolean): Promise<void> {
+    await settings.setDockIconVisibility(visible)
+}

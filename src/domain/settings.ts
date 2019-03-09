@@ -17,9 +17,18 @@ export interface MenuBarRestriction {
 }
 
 export interface AppSettings {
+
+    /* Storage Path */
     getStoragePathSync(): StoragePath
     setStoragePath(absolutePath: string, needMigration: boolean): Promise<void>
+
+    /* Menu Bar Restriction */
     getMenuBarRestriction(): Promise<MenuBarRestriction>
     observeMenuBarRestriction(): Observable<MenuBarRestriction>
     setMenuBarRestriction(restriction: MenuBarRestriction): Promise<void>
+
+    /* Dock Icon Visibility */
+    isDockIconVisible(): Promise<boolean>
+    setDockIconVisibility(visible: boolean): Promise<void>
+    observeDockIconVisibility(): Observable<boolean>
 }

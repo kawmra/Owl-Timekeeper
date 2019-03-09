@@ -1,6 +1,7 @@
 import { app, BrowserWindow, Menu, MenuItemConstructorOptions } from "electron"
 import * as path from "path"
 import { createTray } from "./tray"
+import { observeDockIconVisibility, isDockIconVisible } from "../../domain/useCases";
 
 let mainWindow: Electron.BrowserWindow;
 
@@ -22,7 +23,7 @@ function createWindow() {
         mainWindow = null
     })
 
-    createTray()
+    updateDockIconVisibility()
 }
 
 function createApplicationMenu() {
@@ -55,8 +56,24 @@ function createApplicationMenu() {
 
 function ready() {
     createWindow()
+    createTray()
     createApplicationMenu()
 }
+
+async function updateDockIconVisibility(settingDockIconVisibility?: boolean) {
+    const shouldShowDockIcon = settingDockIconVisibility !== undefined
+        ? settingDockIconVisibility
+        : await isDockIconVisible()
+    if (mainWindow !== null || shouldShowDockIcon) {
+        app.dock.show()
+    } else {
+        app.dock.hide()
+    }
+}
+
+observeDockIconVisibility(visible => {
+    updateDockIconVisibility(visible)
+})
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -65,6 +82,7 @@ app.on("ready", ready)
 
 // Quit when all windows are closed.
 app.on("window-all-closed", () => {
+    updateDockIconVisibility()
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== "darwin") {
