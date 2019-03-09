@@ -120,12 +120,12 @@ export async function getStoragePath(): Promise<StoragePath> {
     return settings.getStoragePathSync()
 }
 
-export async function setMenuBarRestricted(restricted: boolean) {
+export async function setMenuBarRestricted(restricted: boolean): Promise<void> {
     const current = await settings.getMenuBarRestriction()
     return settings.setMenuBarRestriction({ ...current, restricted })
 }
 
-export async function setMenuBarMaxCharacters(maxCharacters: number) {
+export async function setMenuBarMaxCharacters(maxCharacters: number): Promise<void> {
     const current = await settings.getMenuBarRestriction()
     return settings.setMenuBarRestriction({ ...current, maxCharacters })
 }

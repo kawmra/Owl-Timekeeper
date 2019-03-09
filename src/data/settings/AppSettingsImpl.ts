@@ -118,12 +118,14 @@ export class AppSettingsImpl implements AppSettings {
 
 function convertToSettings(json: any): SettingsJson {
     console.log(`load: ${JSON.stringify(json)}`)
-    if (!json.storagePath) throw new Error("The key `storagePath` is missing.")
+    if (!json.storagePath)
+        throw new Error("The key `storagePath` is missing.")
     if (json.storagePath.absolutePath === undefined || json.storagePath.absolutePath === null)
         throw new Error("The key `storagePath.absolutePath` is migging.")
     if (json.storagePath.pendingAbsolutePath === undefined)
         throw new Error("The key `storagePath.pendingAbsolutePath` is missing.")
-    if (!json.menuBarRestriction) throw new Error("The key `menuBarRestriction` is missing.")
+    if (!json.menuBarRestriction)
+        throw new Error("The key `menuBarRestriction` is missing.")
     if (json.menuBarRestriction.restricted === undefined)
         throw new Error("The key `menuBarRestriction.restricted` is missing.")
     if (json.menuBarRestriction.maxCharacters === undefined)

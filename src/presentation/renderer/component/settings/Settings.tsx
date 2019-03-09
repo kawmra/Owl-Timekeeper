@@ -21,7 +21,7 @@ export class Settings extends React.Component<Props, State> {
             <div className="ui basic segment">
                 <h3 className="ui dividing header">Storage</h3>
                 <StorageSetting />
-                <h3 className="ui dividing header">Menu bar</h3>
+                <h3 className="ui dividing header">Menu Bar</h3>
                 <MenuBarRestrictionSetting />
                 <h3 className="ui dividing header">Dock Icon</h3>
                 <DockIconSetting />
