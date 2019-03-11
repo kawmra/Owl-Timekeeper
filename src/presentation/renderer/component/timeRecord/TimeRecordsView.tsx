@@ -128,7 +128,7 @@ export class TimeRecordsView extends React.Component<Props, State> {
                         className="floating ui circular label"
                         id="backToTodayLabel"
                         style={{ display: this.state.targetDay.equals(Day.today()) ? 'none' : 'block' }}
-                        onClick={e => { this.setState({ targetDay: Day.today() }) }}>
+                        onClick={e => { this.observeTimeRecords(Day.today()) }}>
                         <i className="undo alternate icon" />
                         Back to Today
                     </a>
