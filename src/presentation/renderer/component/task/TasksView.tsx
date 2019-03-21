@@ -1,6 +1,6 @@
 import React = require('react');
 import { Task, compareTask } from '../../../../domain/task';
-import { useCases, dialog } from '../../remote';
+import { useCases, dialog, getCurrentWindow } from '../../remote';
 import { ERROR_TASK_ALREADY_EXISTS } from '../../../../data/task/DbTaskRepository';
 import { TaskView } from './TaskView';
 import { Subscription } from '../../../../Observable';
@@ -36,7 +36,7 @@ export class TasksView extends React.Component<Props, State> {
   }
 
   handleDeleteTask(target: Task) {
-    dialog.showMessageBox({
+    dialog.showMessageBox(getCurrentWindow(), {
       message: `Are you sure you want to delete the task \`${target.name}\`?\n\nYou will not be able to undo this action.`,
       buttons: ['Yes, Delete', 'No'],
       cancelId: 1,
@@ -59,9 +59,9 @@ export class TasksView extends React.Component<Props, State> {
     useCases.createTask(this.state.tempTaskName)
       .catch((err: any) => {
         if (err === ERROR_TASK_ALREADY_EXISTS) {
-          dialog.showMessageBox({ message: `The task '${this.state.tempTaskName}' aready exists.` })
+          dialog.showMessageBox(getCurrentWindow(), { message: `The task '${this.state.tempTaskName}' aready exists.` })
         } else {
-          dialog.showMessageBox({ message: `Failed to add a task because: ${err}` })
+          dialog.showMessageBox(getCurrentWindow(), { message: `Failed to add a task because: ${err}` })
         }
       })
   }

@@ -76,7 +76,7 @@ export class TimeRecordsView extends React.Component<Props, State> {
     }
 
     handleOnTimeRecordDelete(timeRecord: TimeRecord) {
-        dialog.showMessageBox({
+        dialog.showMessageBox(getCurrentWindow(), {
             message: `Are you sure you want to delete the record of \`${timeRecord.task.name}\`?\n\nYou will not be able to undo this action.`,
             buttons: ['Yes, Delete', 'No'],
             cancelId: 1,
