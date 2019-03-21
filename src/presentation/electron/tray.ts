@@ -124,23 +124,3 @@ function restrictedTitle(title: string, maxCharacters: number) {
     if (maxCharacters >= title.length) { return title }
     return title.substring(0, maxCharacters) + '…'
 }
-
-function showTimeRecords(records: TimeRecord[]) {
-    dialog.showMessageBox({ message: records.map(r => `${r.task.name}\t${stringify(r)}`).join('\n') })
-}
-
-function stringify(record: TimeRecord): string {
-    return millisToString(record.endTime - record.startTime)
-}
-
-function millisToString(millis: number): string {
-    const seconds = millis / 1000
-    const h = Math.floor(seconds / 3600)
-    const m = Math.floor(seconds % 3600 / 60)
-    const s = Math.floor(seconds % 60)
-    var str = ""
-    if (h !== 0) str += `${h}h `
-    if (m !== 0) str += `${m}m `
-    if (s !== 0) str += `${s}s `
-    return str
-}
