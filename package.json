@@ -13,7 +13,7 @@
   "scripts": {
     "build": "yarn && tsc",
     "build-prod": "yarn && tsc --sourceMap false",
-    "start": "yarn build && electron compiled-src/presentation/electron/main.js",
+    "start": "yarn clean && yarn build && electron compiled-src/presentation/electron/main.js",
     "dist": "yarn clean && yarn build-prod && electron-builder",
     "clean": "rm -rf dist compiled-src"
   },
