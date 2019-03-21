@@ -49,7 +49,7 @@ export class StorageSetting extends React.Component<Props, State> {
     handleSaveClick() {
         dialog.showMessageBox({
             message: `If you change the storage path, the app will be restarted. \n\nAre you sure?`,
-            buttons: ['Yes, Change and restart', 'Cancel'],
+            buttons: ['Yes, Change and Restart', 'Cancel'],
             cancelId: 1,
         }, response => {
             if (response === 0) {
