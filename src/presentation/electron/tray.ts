@@ -115,7 +115,7 @@ async function updateWith(_tasks?: Task[], _activeTask?: ActiveTask | null) {
             : activeTask.task.name
         : ''
     tray.setTitle(title)
-    tray.setToolTip(activeTaskExists ? activeTask.task.name : 'Owl Timekeeper')
+    tray.setToolTip(activeTaskExists ? activeTask.task.name : '')
     tray.setContextMenu(menu)
 }
 
