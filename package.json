@@ -1,19 +1,19 @@
 {
   "name": "owl-timekeeper",
   "productName": "Owl Timekeeper",
-  "version": "0.0.1",
-  "description": "Owl Timekeeper is a simple timekeeper application.",
+  "version": "1.0.0",
+  "description": "A super simple time tracking tool for macOS.",
   "author": {
     "name": "kawmra",
     "url": "https://kawmra.com"
   },
+  "repository": "github:kawmra/Owl-Timekeeper",
   "license": "MIT",
   "main": "compiled-src/presentation/electron/main.js",
   "scripts": {
     "build": "yarn && tsc",
     "build-prod": "yarn && tsc --sourceMap false",
     "start": "yarn build && electron compiled-src/presentation/electron/main.js",
-    "pack": "electron-builder --dir",
     "dist": "yarn clean && yarn build-prod && electron-builder",
     "clean": "rm -rf dist compiled-src"
   },
@@ -35,5 +35,6 @@
     "electron": "^4.0.0",
     "electron-builder": "^20.38.5",
     "typescript": "^3.2.2"
-  }
+  },
+  "private": true
 }
