@@ -4,6 +4,8 @@
 
 <b>A super simple time tracking menu bar app for macOS 🦉</b>
 
+# What's This?
+
 Owl Timekeeper is an app to make it easy to record time.
 You can register the tasks you want to record time, and switch the task from the menu bar to record how much time you spent on which task.
 
