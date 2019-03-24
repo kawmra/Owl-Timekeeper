@@ -2,7 +2,11 @@
 
 <img alt="Owl Timekeeper Icon" src="./build/icon.png" width="100">
 
-<b>超シンプルな時間記録アプリ</b>
+<b align="center">超シンプルな時間記録アプリ</b>
+
+![Screenshot](./assets/screenshot.png)
+
+Translations: [English](https://github.com/kawmra/Owl-Timekeeper/blob/master/README.md), [日本語](https://github.com/kawmra/Owl-Timekeeper/blob/master/README.ja.md)
 
 ## アプリについて
 

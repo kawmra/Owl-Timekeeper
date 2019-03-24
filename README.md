@@ -2,7 +2,11 @@
 
 <img alt="Owl Timekeeper Icon" src="./build/icon.png" width="100">
 
-<b>A super simple time tracking menu bar app for macOS 🦉</b>
+<b align="center">A super simple time tracking menu bar app for macOS 🦉</b>
+
+![Screenshot](./assets/screenshot.png)
+
+Translations: [English](https://github.com/kawmra/Owl-Timekeeper/blob/master/README.md), [日本語](https://github.com/kawmra/Owl-Timekeeper/blob/master/README.ja.md)
 
 # What's This?
 
@@ -14,8 +18,6 @@ You can switch tasks from the menu bar, so there is no need to switch windows in
 The recorded time can be checked with a simple UI.
 This app records the time as when the task started and when the task ended.
 Even if you recorded the time for a wrong task, you can easily fix it with an intuitive UI, so you don't have to worry about time tracking.
-
-[日本語で読む](https://github.com/kawmra/Owl-Timekeeper/blob/master/README.ja.md)
 
 ## Download
 
