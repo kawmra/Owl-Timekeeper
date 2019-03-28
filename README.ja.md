@@ -23,7 +23,7 @@ Owl Timekeeper は、時間の記録を簡単にするためのアプリです�
 
 git をクローンして[ビルド](#ビルド)するか、以下のリンクから最新のバイナリファイルをダウンロードできます。
 
-[Owl Timekeeper 1.0.0](https://github.com/kawmra/Owl-Timekeeper/releases/download/untagged-5bdd9816461faee622d6/Owl.Timekeeper-1.0.0.dmg)
+[Owl Timekeeper 1.0.0](https://github.com/kawmra/Owl-Timekeeper/releases/download/v1.0.0/Owl.Timekeeper-1.0.0.dmg)
 
 ## 使い方
 
