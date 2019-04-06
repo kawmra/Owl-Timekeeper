@@ -1,3 +1,6 @@
+import { app } from 'electron';
+import { UpdateChecker, Update } from './updater';
+import { UpdateCheckerImpl } from './../data/update/UpdateCheckerImpl';
 import { AppSettingsImpl } from '../data/settings/AppSettingsImpl';
 import { Task, ActiveTask, TaskRepository, ActiveTaskRepository } from "./task";
 import { TimeRecord, TimeRecordRepository } from "./timeRecord";
@@ -8,6 +11,7 @@ import { DbTimeRecordRepository } from "../data/timeRecord/DbTimeRecordRepositor
 import { FileActiveTaskRepository } from "../data/task/FileActiveTaskRepository";
 import { Subscription } from "../Observable";
 import { StoragePath, AppSettings, MenuBarRestriction } from "./settings";
+import * as semver from 'semver'
 
 // TODO: Those instances should be injected.
 const settings: AppSettings = new AppSettingsImpl()
@@ -15,6 +19,7 @@ const storagePath = settings.getStoragePathSync()
 let taskRepository: TaskRepository = new DbTaskRepository(storagePath.absolutePath)
 let activeTaskRepository: ActiveTaskRepository = new FileActiveTaskRepository(storagePath.absolutePath)
 let timeRecordRepository: TimeRecordRepository = new DbTimeRecordRepository(storagePath.absolutePath)
+const updateChecker: UpdateChecker = new UpdateCheckerImpl()
 
 export async function createTask(name: string): Promise<Task> {
     const task = { id: v4(), name }
@@ -152,4 +157,14 @@ export function observeDockIconVisibility(listener: (visible: boolean) => void):
 
 export async function setDockIconVisibility(visible: boolean): Promise<void> {
     await settings.setDockIconVisibility(visible)
+}
+
+export async function checkForUpdate(): Promise<Update | null> {
+    const release = await updateChecker.getLatestRelease()
+    if (release === null) { return null }
+    const canUpdate = release.version >= semver.parse(semver.clean(app.getVersion()))
+    return {
+        canUpdate,
+        release
+    }
 }
