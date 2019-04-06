@@ -162,7 +162,7 @@ export async function setDockIconVisibility(visible: boolean): Promise<void> {
 export async function checkForUpdate(): Promise<Update | null> {
     const release = await updateChecker.getLatestRelease()
     if (release === null) { return null }
-    const canUpdate = release.version >= semver.parse(semver.clean(app.getVersion()))
+    const canUpdate = release.version > semver.parse(semver.clean(app.getVersion()))
     return {
         canUpdate,
         release
