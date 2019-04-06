@@ -1,10 +1,15 @@
-import { app, BrowserWindow, Menu, MenuItemConstructorOptions } from "electron"
+import { app, BrowserWindow, Menu, MenuItemConstructorOptions, Notification, shell } from "electron"
 import * as path from "path"
 import { createTray } from "./tray"
-import { isDockIconVisible } from "../../domain/useCases";
+import { isDockIconVisible, checkForUpdate } from "../../domain/useCases";
+import { Release } from './../../domain/updater';
+
+const INTERVAL_CHECK_FOR_UPDATE_MS = 1000 * 60 * 60 * 2 // 2 hours
 
 let mainWindow: Electron.BrowserWindow
 let currentDockVisibility: boolean = undefined
+let lastTimeCheckedForUpdate: number = 0
+let lastNotification: Notification | undefined = undefined
 
 function createWindow() {
     // Create the browser window.
@@ -34,6 +39,11 @@ function createApplicationMenu() {
             label: app.getName(),
             submenu: [
                 { role: 'about' },
+                {
+                    type: 'normal',
+                    label: 'Check For Updates…',
+                    click: () => { checkForUpdateIfNeeded(true) }
+                },
                 { type: 'separator' },
                 { role: 'hide' },
                 { role: 'hideOthers' },
@@ -56,10 +66,40 @@ function createApplicationMenu() {
     Menu.setApplicationMenu(Menu.buildFromTemplate(template))
 }
 
+function shouldCheckForUpdate() {
+    return new Date().getTime() >= lastTimeCheckedForUpdate + INTERVAL_CHECK_FOR_UPDATE_MS
+}
+
+async function checkForUpdateIfNeeded(forced: boolean = false) {
+    if (forced || shouldCheckForUpdate()) {
+        const updates = await checkForUpdate()
+        if (updates && updates.canUpdate) {
+            notifyUpdateFound(updates.release)
+        }
+        lastTimeCheckedForUpdate = new Date().getTime()
+    }
+}
+
+function notifyUpdateFound(release: Release) {
+    if (lastNotification) {
+        lastNotification.close()
+    }
+    const notification = new Notification({
+        title: 'Update found',
+        body: 'The new Owl Timekeeper is released!'
+    })
+    notification.on('click', () => {
+        shell.openExternal(release.url)
+    })
+    notification.show()
+    lastNotification = notification
+}
+
 function ready() {
     createWindow()
     createTray()
     createApplicationMenu()
+    checkForUpdateIfNeeded()
 }
 
 async function updateDockIconVisibility() {
@@ -100,4 +140,5 @@ export function focusMainWindow() {
     } else {
         mainWindow.focus()
     }
+    checkForUpdateIfNeeded()
 }
