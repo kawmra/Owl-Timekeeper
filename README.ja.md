@@ -1,6 +1,9 @@
 # Owl Timekeeper
 
-<img alt="Owl Timekeeper Icon" src="./build/icon.png" width="100">
+<p>
+<img src="https://img.shields.io/github/release/kawmra/Owl-Timekeeper.svg">
+<img src="https://img.shields.io/github/license/kawmra/Owl-Timekeeper.svg">
+</p>
 
 <b align="center">超シンプルな時間記録アプリ</b>
 
@@ -9,6 +12,8 @@
 Translations: [English](https://github.com/kawmra/Owl-Timekeeper/blob/master/README.md), [日本語](https://github.com/kawmra/Owl-Timekeeper/blob/master/README.ja.md)
 
 ## アプリについて
+
+<img alt="Owl Timekeeper Icon" src="./build/icon.png" width="100">
 
 Owl Timekeeper は、時間の記録を簡単にするためのアプリです。
 時間を記録したいタスクを登録し、メニューバーからタスクを切り替えるだけでどのタスクにどれくらいの時間を費やしたかを記録できます。
@@ -23,7 +28,7 @@ Owl Timekeeper は、時間の記録を簡単にするためのアプリです�
 
 git をクローンして[ビルド](#ビルド)するか、以下のリンクから最新のバイナリファイルをダウンロードできます。
 
-[Owl Timekeeper 1.0.0](https://github.com/kawmra/Owl-Timekeeper/releases/download/v1.0.0/Owl.Timekeeper-1.0.0.dmg)
+[Owl Timekeeper 1.1.0](https://github.com/kawmra/Owl-Timekeeper/releases/download/v1.1.0/Owl.Timekeeper-1.1.0.dmg)
 
 ## 使い方
 

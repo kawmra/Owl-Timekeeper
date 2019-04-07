@@ -1,6 +1,9 @@
 # Owl Timekeeper
 
-<img alt="Owl Timekeeper Icon" src="./build/icon.png" width="100">
+<p>
+<img src="https://img.shields.io/github/release/kawmra/Owl-Timekeeper.svg">
+<img src="https://img.shields.io/github/license/kawmra/Owl-Timekeeper.svg">
+</p>
 
 <b align="center">A super simple time tracking menu bar app for macOS 🦉</b>
 
@@ -9,6 +12,8 @@
 Translations: [English](https://github.com/kawmra/Owl-Timekeeper/blob/master/README.md), [日本語](https://github.com/kawmra/Owl-Timekeeper/blob/master/README.ja.md)
 
 # What's This?
+
+<img alt="Owl Timekeeper Icon" src="./build/icon.png" width="100">
 
 Owl Timekeeper is an app to make it easy to record time.
 You can register the tasks you want to record time, and switch the task from the menu bar to record how much time you spent on which task.
@@ -23,7 +28,7 @@ Even if you recorded the time for a wrong task, you can easily fix it with an in
 
 You can clone git and [build](#build) or download the latest binary file from the link below.
 
-[Owl Timekeeper 1.0.0](https://github.com/kawmra/Owl-Timekeeper/releases/download/v1.0.0/Owl.Timekeeper-1.0.0.dmg)
+[Owl Timekeeper 1.1.0](https://github.com/kawmra/Owl-Timekeeper/releases/download/v1.1.0/Owl.Timekeeper-1.1.0.dmg)
 
 ## How to use
 
