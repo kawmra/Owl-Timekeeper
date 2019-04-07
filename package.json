@@ -1,7 +1,7 @@
 {
   "name": "owl-timekeeper",
   "productName": "Owl Timekeeper",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A super simple time tracking tool for macOS.",
   "author": {
     "name": "kawmra",
