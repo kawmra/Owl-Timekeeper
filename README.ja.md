@@ -96,6 +96,10 @@ $ yarn dist
 
 `dist/` ディレクトリに `dmg` ファイルや `app` ファイルが生成されます。
 
-## License
+## 謝辞
+
+素敵なアプリアイコンとメニューバーアイコンは Motoharu Kawanishi さんに制作していただきました。
+
+## ライセンス
 
 MIT

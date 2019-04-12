@@ -96,6 +96,10 @@ $ yarn dist
 
 `dmg` and `app` files are generated in the `dist/` directory.
 
+## Thanks
+
+The beautiful app icon and menu bar icon are designed by Motoharu Kawanishi.
+
 ## License
 
 MIT
