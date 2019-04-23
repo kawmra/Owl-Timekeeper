@@ -72,12 +72,32 @@ function shouldCheckForUpdate() {
 
 async function checkForUpdateIfNeeded(forced: boolean = false) {
     if (forced || shouldCheckForUpdate()) {
-        const updates = await checkForUpdate()
-        if (updates && updates.canUpdate) {
-            notifyUpdateFound(updates.release)
+        const updates = await checkForUpdate().catch(() => { null })
+        if (updates) {
+            if (updates.canUpdate) {
+                notifyUpdateFound(updates.release)
+            } else if (forced) {
+                notifyNoUpdateFound()
+            }
+        } else if (forced) {
+            notifyFailedToCheckForUpdate()
         }
         lastTimeCheckedForUpdate = new Date().getTime()
     }
+}
+
+function notifyFailedToCheckForUpdate() {
+    new Notification({
+        title: 'Failed to check for update',
+        body: 'Please try again after a while.'
+    }).show()
+}
+
+function notifyNoUpdateFound() {
+    new Notification({
+        title: 'No Update found',
+        body: 'Your Owl Timekeeper is up-to-date'
+    }).show()
 }
 
 function notifyUpdateFound(release: Release) {
