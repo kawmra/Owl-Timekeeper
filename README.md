@@ -28,7 +28,7 @@ Even if you recorded the time for a wrong task, you can easily fix it with an in
 
 You can clone git and [build](#build) or download the latest binary file from the link below.
 
-[Owl Timekeeper 1.1.0](https://github.com/kawmra/Owl-Timekeeper/releases/download/v1.1.0/Owl.Timekeeper-1.1.0.dmg)
+[Owl Timekeeper 1.1.1](https://github.com/kawmra/Owl-Timekeeper/releases/download/v1.1.1/Owl.Timekeeper-1.1.1.dmg)
 
 ## How to use
 
