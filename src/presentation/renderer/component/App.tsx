@@ -3,10 +3,12 @@ import { TasksView } from "./task/TasksView";
 import { TimeRecordsView } from "./timeRecord/TimeRecordsView";
 import { Day } from "../../../domain/day";
 import { Settings } from "./settings/Settings";
+import {Stats} from "./stats";
 
 enum Page {
     TASKS,
     TIME_RECORDS,
+    STATS,
     SETTINGS,
 }
 
@@ -37,7 +39,7 @@ export class App extends React.Component<Props, State> {
         }
         return (
             <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                <div className="ui inverted attached borderless labeled icon three item menu"
+                <div className="ui inverted attached borderless labeled icon four item menu"
                     style={{ backgroundColor: '#003366' }}>
                     <a className={"item" + active.call(this, Page.TASKS)} onClick={this.switchPage.bind(this, Page.TASKS)}>
                         <i className="tasks icon"></i>
@@ -46,6 +48,10 @@ export class App extends React.Component<Props, State> {
                     <a className={"item" + active.call(this, Page.TIME_RECORDS)} onClick={this.switchPage.bind(this, Page.TIME_RECORDS)}>
                         <i className="clock outline icon"></i>
                         Time Records
+                    </a>
+                    <a className={"item" + active.call(this, Page.STATS)} onClick={this.switchPage.bind(this, Page.STATS)}>
+                        <i className="chart bar icon"></i>
+                        Stats
                     </a>
                     <a className={"right item" + active.call(this, Page.SETTINGS)} onClick={this.switchPage.bind(this, Page.SETTINGS)}>
                         <i className="cog icon"></i>
@@ -59,6 +65,9 @@ export class App extends React.Component<Props, State> {
                     </div>
                     <div style={visibility.call(this, Page.TIME_RECORDS)}>
                         <TimeRecordsView day={Day.today()} />
+                    </div>
+                    <div style={visibility.call(this, Page.STATS)}>
+                        <Stats />
                     </div>
                     <div style={visibility.call(this, Page.SETTINGS)}>
                         <Settings />

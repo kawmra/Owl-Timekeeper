@@ -93,8 +93,8 @@ export async function addTimeRecord(task: Task, startTime: number, endTime: numb
     return timeRecord
 }
 
-export async function getTimeRecords(day: Day): Promise<TimeRecord[]> {
-    return timeRecordRepository.select(day)
+export async function getTimeRecords(fromDay: Day, toDay?: Day): Promise<TimeRecord[]> {
+    return timeRecordRepository.select(fromDay, toDay)
 }
 
 export function observeTimeRecords(day: Day, listener: (records: TimeRecord[]) => void): Subscription {

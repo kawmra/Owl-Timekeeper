@@ -55,11 +55,12 @@ export class DbTimeRecordRepository implements TimeRecordRepository {
         })
     }
 
-    select(day: Day): Promise<TimeRecord[]> {
+    select(fromDay: Day, toDay: Day = fromDay): Promise<TimeRecord[]> {
+        console.log(`select; fromDay: ${fromDay.toString()}, toDay: ${toDay?.toString()}`)
         return new Promise((resolve, reject) => {
-            const dayStart = day.toMillis()
-            const dayEnd = dayStart + 86400000 // 24 hours later
-            this.db.find({ $and: [{ startTime: { $gte: dayStart } }, { startTime: { $lt: dayEnd } }] }).exec((err, docs: TimeRecord[]) => {
+            const start = fromDay.toMillis()
+            const end = toDay.toMillis() + 86400000 // 24 hours later
+            this.db.find({ $and: [{ startTime: { $gte: start } }, { startTime: { $lt: end } }] }).exec((err, docs: TimeRecord[]) => {
                 if (err) {
                     reject(err)
                     return

@@ -13,7 +13,7 @@ export interface TimeRecordRepository {
     addTimeRecord(timeRecord: TimeRecord): Promise<void>
     update(timeRecord: TimeRecord): Promise<void>
     updateTaskName(taskId: string, newName: string): Promise<void>
-    select(day: Day): Promise<TimeRecord[]>
+    select(fromDay: Day, toDay?: Day): Promise<TimeRecord[]>
     observe(day: Day): Observable<TimeRecord[]>
     selectAll(): Promise<TimeRecord[]>
     delete(id: string): Promise<void>
